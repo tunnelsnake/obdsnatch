@@ -6,4 +6,4 @@ class CanMessage:
         self.cob_id = cob_id
         self.datalen = len(str((data)))
         self.data = data
-        self.recvflag = recv_flag
+        self.recv_flag = recv_flag
