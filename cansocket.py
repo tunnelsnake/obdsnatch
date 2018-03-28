@@ -28,9 +28,9 @@ class CANSocket(object):
         print("[-] Problem Binding Socket on Interface " + str(interface) + ".")
         print("[-] Try Killing Other Python Processes.")
 
-  def send(self, message=cm.CanMessage, flags=0):
+  def send(self, message, flags=0):
         message.data = generate_bytes(format(message.data, '02x'))
-        message.cob_id = message.cob_id | flags
+        message.cob_id = message.cob_id
         print("Cob ID: " + str(message.cob_id))
         print("Message Length: " + str(message.datalen))
         print("Recalculated Length: " + str(len(message.data)))

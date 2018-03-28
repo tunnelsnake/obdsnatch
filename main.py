@@ -14,9 +14,9 @@ class OBDSnatch:
             rbus_message = self.rbus.recv();
             fbus_message = self.fbus.recv();
 
-            if rbus_message.recv_flag:
+            if rbus_message.recv_flag == True:
                 self.fbus.send(rbus_message)
-            if fbus_message.recv_flag:
+            if fbus_message.recv_flag == True:
                 self.rbus.send(rbus_message)
 
 o = OBDSnatch()
