@@ -52,6 +52,7 @@ class CANSocket(object):
                 message.cob_id &= socket.CAN_EFF_MASK
 
             print('%s %03x#%s' % ("can", cob_id, format_data(data)))
+            message.data = int(("0x" + format_data(data)), 16)
             return message
         else:
             print("[-] No Packet Ready")
