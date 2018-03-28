@@ -31,7 +31,7 @@ class CANSocket(object):
   def send(self, message=cm.CanMessage, flags=0):
     if (message.cob_id == -1):
         print("[-] Bad Message, Not Sending.")
-        print("[-] COB ID: " + message.cob_id)
+        print("[-] COB ID: " + str(message.cob_id))
         return
     else:
         message.data = generate_bytes(message.data)
