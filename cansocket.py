@@ -61,6 +61,7 @@ class CANSocket(object):
       message = cm.CanMessage(cob_id, data)
 
     message.cob_id &= socket.CAN_EFF_MASK
+    print(message.cob_id + ":" + str(hex(message.data)))
     return message
 
 
