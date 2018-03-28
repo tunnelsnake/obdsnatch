@@ -42,13 +42,13 @@ class CANSocket(object):
         ready = select.select([self.sock], [], [], self.socktimeout)
         if ready[0]:
             can_pkt = self.sock.recv(72)
-            print("[+} Packet Received Successfully")
+            print("[+] Packet Received Successfully")
             if len(can_pkt) == 16:
                 cob_id, length, data = struct.unpack(self.FORMAT, can_pkt)
                 message = cm.CanMessage(cob_id, data[:length], True)
             else:
                 cob_id, length, data = struct.unpack(self.FD_FORMAT, can_pkt)
-                message = cm.CanMessage('%s %03x' % cob_id, format_data(data[:length]) + True)
+                message = cm.CanMessage('%03x' % cob_id, format_data(data[:length]) + True)
 
             message.cob_id &= socket.CAN_EFF_MASK
             print('%s %03x#%s' % ("can", cob_id, format_data(data)))

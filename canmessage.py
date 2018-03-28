@@ -7,3 +7,8 @@ class CanMessage:
         self.datalen = len(str((data)))
         self.data = data
         self.recv_flag = recv_flag
+
+        print("MESSAGE CREATED")
+        print("COB ID: " + str(self.cob_id))
+        print("DATALEN: " + str(self.datalen))
+        print("RECV FLAG: " + str(recv_flag))
