@@ -52,7 +52,7 @@ class CANSocket(object):
 
     if len(can_pkt) == 16:
       cob_id, length, data = struct.unpack(self.FORMAT, can_pkt)
-      message = cm.CanMessage(int(cob_id,16), data[:length], True)
+      message = cm.CanMessage(cob_id, data[:length], True)
     else:
       cob_id, length, data = struct.unpack(self.FD_FORMAT, can_pkt)
       message = cm.CanMessage(cob_id, data[:length])
