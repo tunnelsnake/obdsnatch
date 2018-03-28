@@ -45,14 +45,13 @@ class CANSocket(object):
             print("[+] Packet Received Successfully")
             if len(can_pkt) == 16:
                 cob_id, length, data = struct.unpack(self.FORMAT, can_pkt)
-                message = cm.CanMessage(cob_id, int(("0x" + format_data(data[:length]), True)))
+                message = cm.CanMessage(cob_id, data[:length], True)
             else:
                 cob_id, length, data = struct.unpack(self.FD_FORMAT, can_pkt)
-                message = cm.CanMessage('%03x' % cob_id, format_data(data[:length]) + True)
+                message = cm.CanMessage('%03x' % cob_id, int(data[:length], 16) + True)
                 message.cob_id &= socket.CAN_EFF_MASK
 
             print('%s %03x#%s' % ("can", cob_id, format_data(data)))
-            message.data = int(("0x" + format_data(data)), 16)
             return message
         else:
             print("[-] No Packet Ready")
