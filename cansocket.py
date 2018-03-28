@@ -64,13 +64,14 @@ def format_data(data):
 
 
 def generate_bytes(data_int):
-    hex_string = '0x{:02x}'.format(data_int)
+    #hex_string = '0x{:02x}'.format(data_int)
+    hex_string = '{:02x}'.format(data_int)
     if len(hex_string) % 2 != 0:
       hex_string = "0" + hex_string
 
     int_array = []
     for i in range(0, len(hex_string), 2):
-        int_array.append(int(hex_string[i:i+2], 16))
+        int_array.append(int((hex_string[i:i+2], 16))
 
     return bytes(int_array)
 
