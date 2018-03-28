@@ -1,4 +1,4 @@
-
+import binascii
 
 class CanMessage:
 
@@ -11,5 +11,5 @@ class CanMessage:
         print("MESSAGE CREATED")
         print("COB ID: %03x" % self.cob_id)
         print("DATALEN: " + str(self.datalen))
-        print("DATA: %16x" % data)
+        print("DATA: " + binascii.hexlify(data))
         print("RECV FLAG: " + str(recv_flag))
