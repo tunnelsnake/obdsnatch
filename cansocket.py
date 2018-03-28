@@ -49,7 +49,6 @@ class CANSocket(object):
     except socket.error:
         if can_pkt is not None:
             print("[-] Socket Error: Packet is not null")
-        else:
 
     if len(can_pkt) == 16:
       cob_id, length, data = struct.unpack(self.FORMAT, can_pkt)
