@@ -10,6 +10,7 @@ class CANSocket(object):
   FORMAT = "<IB3x8s"
   FD_FORMAT = "<IB3x64s"
   CAN_RAW_FD_FRAMES = 5
+  socktimeout = .25
 
   def __init__(self, interface=None):
     self.sock = socket.socket(socket.PF_CAN, socket.SOCK_RAW, socket.CAN_RAW)
@@ -20,6 +21,7 @@ class CANSocket(object):
     try:
         self.sock.bind((interface,))
         self.sock.setsockopt(socket.SOL_CAN_RAW, self.CAN_RAW_FD_FRAMES, 1)
+        self.sock.setblocking(0)
         #fcntl.fcntl(self.sock, fcntl.F_SETFL, os.O_NONBLOCK)
         print("[+] Socket Bound Successfully on Interface " + str(interface) + ".")
     except OSError:
@@ -38,12 +40,17 @@ class CANSocket(object):
 
   def recv(self, flags=0):
     try:
-        can_pkt = self.sock.recv(72)
+        ready = select.select([self.sock], [], [], self.socktimeout)
+        if ready[0]:
+            can_pkt = self.sock.recv(72)
+            print("[+} Packet Received Successfully")
+        else:
+            return cm.CanMessage(-1, 0);
     except socket.error:
         if can_pkt is not None:
-            print("CAN PACKET ISN'T NULL")
+            print("[-] Socket Error: Packet is not null")
         else:
-            print("CAN PACKET IS NULL")
+            print("[- Socket Error: Packet is null")
         return cm.CanMessage(-1, 0)
 
     if len(can_pkt) == 16:
