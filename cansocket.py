@@ -32,7 +32,7 @@ class CANSocket(object):
         message.data = generate_bytes(format(message.data, '02x'))
         message.cob_id = message.cob_id | flags
         print("Cob ID: " + str(message.cob_id))
-        print("Message Length: " + message.datalen)
+        print("Message Length: " + str(message.datalen))
         print("Recalculated Length: " + len(message.data))
         can_pkt = struct.pack(self.FORMAT, message.cob_id, message.datalen, message.data)
         self.sock.send(can_pkt)
