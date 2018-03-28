@@ -37,7 +37,7 @@ class CANSocket(object):
   def recv(self, flags=0):
     try:
         can_pkt = self.sock.recv(72)
-    except socket.error:
+    except BlockingIOError:
         return cm.CanMessage(-1, 0)
 
     if len(can_pkt) == 16:
