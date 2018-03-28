@@ -44,8 +44,6 @@ class CANSocket(object):
         if ready[0]:
             can_pkt = self.sock.recv(72)
             print("[+} Packet Received Successfully")
-        else:
-            return cm.CanMessage(-2, 0, False)
     except socket.error:
         if can_pkt is not None:
             print("[-] Socket Error: Packet is not null")
