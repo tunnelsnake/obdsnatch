@@ -1,3 +1,4 @@
+
 import os
 import socket
 import struct
@@ -39,6 +40,8 @@ class CANSocket(object):
     try:
         can_pkt = self.sock.recv(72)
     except BlockingIOError:
+        if can_pkt is not None:
+            print("CAN PACKET ISN'T NULL")
         return cm.CanMessage(-1, 0)
 
     if len(can_pkt) == 16:
