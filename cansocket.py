@@ -29,7 +29,7 @@ class CANSocket(object):
         print("[-] Try Killing Other Python Processes.")
 
   def send(self, message=cm.CanMessage, flags=0):
-        message.data = generate_bytes(message.data)
+        message.data = generate_bytes(format(message.data, '02x'))
         message.cob_id = message.cob_id | flags
         can_pkt = struct.pack(self.FORMAT, message.cob_id, message.datalen, message.data)
         self.sock.send(can_pkt)
