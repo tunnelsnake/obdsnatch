@@ -55,13 +55,13 @@ class CANSocket(object):
 
     if len(can_pkt) == 16:
       cob_id, length, data = struct.unpack(self.FORMAT, can_pkt)
-      message = cm.CanMessage(cob_id, data)
+      message = cm.CanMessage(cob_id, data[:length])
     else:
       cob_id, length, data = struct.unpack(self.FD_FORMAT, can_pkt)
-      message = cm.CanMessage(cob_id, data)
+      message = cm.CanMessage(cob_id, data[:length])
 
     message.cob_id &= socket.CAN_EFF_MASK
-    print(str(message.cob_id) + ":" + format(x, '02x') for x in message.data)
+    print('%s %03x#%s' % ("can", cob_id, format_data(data)))
     return message
 
 
