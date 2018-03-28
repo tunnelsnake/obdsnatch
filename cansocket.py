@@ -29,7 +29,7 @@ class CANSocket(object):
         print("[-] Try Killing Other Python Processes.")
 
   def send(self, message, flags=0):
-        #message.data = generate_bytes(message.data)
+        message.data = generate_bytes(message.data)
         message.cob_id = "%03x" % message.cob_id
         print("Cob ID: " + str(message.cob_id))
         print("Message Length: " + str(message.datalen))
@@ -63,7 +63,8 @@ def format_data(data):
     return ''.join([hex(byte)[2:] for byte in data])
 
 
-def generate_bytes(hex_string):
+def generate_bytes(data_int):
+    hex_string = '0x{:02x}'.format(data_int)
     if len(hex_string) % 2 != 0:
       hex_string = "0" + hex_string
 
