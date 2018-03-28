@@ -33,7 +33,7 @@ class CANSocket(object):
         message.cob_id = message.cob_id | flags
         print("Cob ID: " + str(message.cob_id))
         print("Message Length: " + str(message.datalen))
-        print("Recalculated Length: " + len(message.data))
+        print("Recalculated Length: " + str(len(message.data)))
         can_pkt = struct.pack(self.FORMAT, message.cob_id, message.datalen, message.data)
         self.sock.send(can_pkt)
         print("[+] Message Sent")
