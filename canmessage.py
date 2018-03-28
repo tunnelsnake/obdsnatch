@@ -7,5 +7,5 @@ class CanMessage:
             self.cob_id = cob_id
         else:
             self.cob_id = -1
-        self.datalen = len(data)
+        self.datalen = len(str((data)))
         self.data = data
