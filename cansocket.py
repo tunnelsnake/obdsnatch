@@ -58,7 +58,7 @@ class CANSocket(object):
       message = cm.CanMessage(cob_id, data[:length], True)
     else:
       cob_id, length, data = struct.unpack(self.FD_FORMAT, can_pkt)
-      message = cm.CanMessage(cob_id, data[:length])
+      message = cm.CanMessage('%s %03x' % cob_id, data[:length])
 
     message.cob_id &= socket.CAN_EFF_MASK
     print('%s %03x#%s' % ("can", cob_id, format_data(data)))
