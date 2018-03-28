@@ -11,8 +11,8 @@ class OBDSnatch:
     def start(self):
 
         while(True):
-            rbus_message, rbus_recv_flag = self.rbus.recv();
-            fbus_message, fbus_recv_flag = self.fbus.recv();
+            rbus_message = self.rbus.recv();
+            fbus_message = self.fbus.recv();
 
             if (rbus_recv_flag):
                 self.fbus.send(rbus_message)

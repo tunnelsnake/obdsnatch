@@ -42,17 +42,17 @@ class CANSocket(object):
             can_pkt = self.sock.recv(72)
             print("[+} Packet Received Successfully")
         else:
-            return cm.CanMessage(-1, 0), False
+            return cm.CanMessage(-1, 0, False)
     except socket.error:
         if can_pkt is not None:
             print("[-] Socket Error: Packet is not null")
         else:
             print("[- Socket Error: Packet is null")
-            return cm.CanMessage(-1, 0), True
+            return cm.CanMessage(-1, 0, False)
 
     if len(can_pkt) == 16:
       cob_id, length, data = struct.unpack(self.FORMAT, can_pkt)
-      message = cm.CanMessage(cob_id, data[:length])
+      message = cm.CanMessage(cob_id, data[:length], True)
     else:
       cob_id, length, data = struct.unpack(self.FD_FORMAT, can_pkt)
       message = cm.CanMessage(cob_id, data[:length])
