@@ -54,7 +54,8 @@ class CANSocket(object):
             print('%s %03x#%s' % ("can", cob_id, format_data(data)))
             return message
         else:
-            return cm.CanMessage(-1,0,False)
+            print("[-] No Packet Ready")
+            return None
 
 
 
