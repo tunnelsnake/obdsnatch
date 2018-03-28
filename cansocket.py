@@ -29,11 +29,6 @@ class CANSocket(object):
         print("[-] Try Killing Other Python Processes.")
 
   def send(self, message=cm.CanMessage, flags=0):
-    if (message.cob_id == -1):
-        print("[-] Bad Message, Not Sending.")
-        print("[-] COB ID: " + str(message.cob_id))
-        return
-    else:
         message.data = generate_bytes(message.data)
         message.cob_id = message.cob_id | flags
         can_pkt = struct.pack(self.FORMAT, message.cob_id, message.datalen, message.data)
@@ -47,13 +42,13 @@ class CANSocket(object):
             can_pkt = self.sock.recv(72)
             print("[+} Packet Received Successfully")
         else:
-            return cm.CanMessage(-1, 0);
+            return cm.CanMessage(-1, 0), False
     except socket.error:
         if can_pkt is not None:
             print("[-] Socket Error: Packet is not null")
         else:
             print("[- Socket Error: Packet is null")
-        return cm.CanMessage(-1, 0)
+            return cm.CanMessage(-1, 0), True
 
     if len(can_pkt) == 16:
       cob_id, length, data = struct.unpack(self.FORMAT, can_pkt)
