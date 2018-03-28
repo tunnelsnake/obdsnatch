@@ -3,7 +3,7 @@
 class CanMessage:
 
     def __init__(self, cob_id, data):
-        if (len(cob_id) == 3):
+        if (len(str(cob_id)) == 3):
             self.cob_id = cob_id
         else:
             self.cob_id = -1
