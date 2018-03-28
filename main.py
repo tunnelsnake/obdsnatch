@@ -4,7 +4,7 @@ import canmessage as cm
 class OBDSnatch:
 
     def __init__(self):
-        self.rbus = cs.CANSocket("can0")
+        self.rbus = cs.CANSocket("can1")
         #self.fbus = cs.CANSocket("can1")
         print("Starting OBDSnatch...")
 
