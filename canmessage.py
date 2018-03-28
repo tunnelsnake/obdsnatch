@@ -9,6 +9,6 @@ class CanMessage:
         self.recv_flag = recv_flag
 
         print("MESSAGE CREATED")
-        print("COB ID: %03x" % str(self.cob_id))
+        print("COB ID: %03x" % self.cob_id)
         print("DATALEN: " + str(self.datalen))
         print("RECV FLAG: " + str(recv_flag))
