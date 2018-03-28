@@ -33,6 +33,7 @@ class CANSocket(object):
         print("[-] Bad Message, Not Sending.")
         return
     else:
+        message.data = generate_bytes(message.data)
         message.cob_id = message.cob_id | flags
         can_pkt = struct.pack(self.FORMAT, message.cob_id, message.datalen, message.data)
         self.sock.send(can_pkt)
