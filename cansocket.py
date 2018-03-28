@@ -30,7 +30,7 @@ class CANSocket(object):
 
   def send(self, message, flags=0):
         message.data = generate_bytes(format(message.data, '02x'))
-        message.cob_id = message.cob_id
+        message.cob_id = "%03x" % message.cob_id
         print("Cob ID: " + str(message.cob_id))
         print("Message Length: " + str(message.datalen))
         print("Recalculated Length: " + str(len(message.data)))
