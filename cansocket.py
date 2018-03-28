@@ -20,7 +20,7 @@ class CANSocket(object):
     try:
         self.sock.bind((interface,))
         self.sock.setsockopt(socket.SOL_CAN_RAW, self.CAN_RAW_FD_FRAMES, 1)
-        fcntl.fcntl(self.sock, fcntl.F_SETFL, os.O_NONBLOCK)
+        #fcntl.fcntl(self.sock, fcntl.F_SETFL, os.O_NONBLOCK)
         print("[+] Socket Bound Successfully on Interface " + str(interface) + ".")
     except OSError:
         print("[-] Problem Binding Socket on Interface " + str(interface) + ".")
@@ -39,9 +39,11 @@ class CANSocket(object):
   def recv(self, flags=0):
     try:
         can_pkt = self.sock.recv(72)
-    except BlockingIOError:
+    except socket.error:
         if can_pkt is not None:
             print("CAN PACKET ISN'T NULL")
+        else:
+            print("CAN PACKET IS NULL")
         return cm.CanMessage(-1, 0)
 
     if len(can_pkt) == 16:
