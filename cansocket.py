@@ -20,8 +20,9 @@ class CANSocket(object):
         self.sock.bind((interface,))
         self.sock.setsockopt(socket.SOL_CAN_RAW, self.CAN_RAW_FD_FRAMES, 1)
         fcntl.fcntl(self.sock, fcntl.F_SETFL, os.O_NONBLOCK)
+        print("Socket Bound Successfully on Interface " + str(interface) + ".")
     except OSError:
-        print("Problem Binding Socket on Interface: " + str(interface) + ".")
+        print("Problem Binding Socket on Interface " + str(interface) + ".")
         print("Try Killing Other Python Processes.")
 
   def send(self, message=cm.CanMessage, flags=0):

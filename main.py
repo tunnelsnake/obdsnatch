@@ -6,6 +6,7 @@ class OBDSnatch:
     def __init__(self):
         self.rbus = cs.CANSocket("can0")
         self.fbus = cs.CANSocket("can1")
+        print("Starting OBDSnatch...")
 
     def start(self):
 
@@ -18,4 +19,6 @@ class OBDSnatch:
             if (fbus_message.cob_id != -1):
                 self.rbus.send(rbus_message)
 
+o = OBDSnatch()
+o.start()
 
