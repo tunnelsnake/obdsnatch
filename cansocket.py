@@ -71,7 +71,7 @@ def generate_bytes(data_int):
 
     int_array = []
     for i in range(0, len(hex_string), 2):
-        int_array.append(int((hex_string[i:i+2], 16))
+        int_array.append(int((hex_string[i:i+2], 16)))
 
     return bytes(int_array)
 
