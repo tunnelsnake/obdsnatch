@@ -12,5 +12,4 @@ class CanMessage:
         print("MESSAGE CREATED")
         print("COB ID: %03x" % self.cob_id)
         print("DATALEN: " + str(self.datalen))
-        print("DATA: " + struct.unpack('<', data))
         print("RECV FLAG: " + str(recv_flag))
