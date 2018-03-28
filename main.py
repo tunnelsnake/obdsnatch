@@ -20,7 +20,7 @@ class OBDSnatch:
             if rbus_message != None:
                 self.fbus.send(rbus_message)
             if fbus_message.recv_flag != None:
-                self.rbus.send(rbus_message)
+                self.rbus.send(fbus_message)
 
 o = OBDSnatch()
 o.start()
