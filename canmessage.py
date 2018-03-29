@@ -12,5 +12,5 @@ class CanMessage:
         if self.debug:
             print("MESSAGE CREATED")
             print("COB ID: %03x" % self.cob_id)
-            print("DATALEN: " + str(self.datalength))
+            print("DATALEN: " + str(self.datalen))
             print("RECV FLAG: " + str(recv_flag))
