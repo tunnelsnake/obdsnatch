@@ -12,6 +12,7 @@ class CANSocket(object):
   debug = True
 
   def __init__(self, interface=None, can_filter_id=0x000, can_filter_mask=0x000):
+    self.interface = interface
     self.canfilter = struct.pack("=II", can_filter_id, can_filter_mask)
     self.sock = socket.socket(socket.PF_CAN, socket.SOCK_RAW, socket.CAN_RAW)
     if interface is not None:
@@ -32,7 +33,7 @@ class CANSocket(object):
   def send(self, message, flags=0):
         can_pkt = struct.pack(self.FORMAT, message.cob_id, message.datalen, message.data)
         self.sock.send(can_pkt)
-        #print("[+] Message Sent")
+        print("[+] Message Sent on Interface " + self.interface)
 
   def recv(self, flags=0):
         ready = select.select([self.sock], [], [], self.socktimeout)
