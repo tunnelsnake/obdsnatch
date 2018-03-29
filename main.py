@@ -24,7 +24,6 @@ class OBDSnatch:
                 if fbus_message.cob_id == 0x7DF:
                     print("[+] Reader Query Message Detected")
                     self.rbus.send(fbus_message)
-        sleep(.002)
 
 o = OBDSnatch()
 o.start()
