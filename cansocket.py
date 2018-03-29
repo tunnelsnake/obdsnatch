@@ -2,8 +2,6 @@
 import select
 import socket
 import struct
-import errno
-import fcntl
 import canmessage as cm
 
 class CANSocket(object):
@@ -11,6 +9,7 @@ class CANSocket(object):
   FD_FORMAT = "<IB3x64s"
   CAN_RAW_FD_FRAMES = 5
   socktimeout = .25
+  debug = True
 
   def __init__(self, interface=None):
     self.sock = socket.socket(socket.PF_CAN, socket.SOCK_RAW, socket.CAN_RAW)
@@ -22,7 +21,6 @@ class CANSocket(object):
         self.sock.bind((interface,))
         self.sock.setsockopt(socket.SOL_CAN_RAW, self.CAN_RAW_FD_FRAMES, 1)
         self.sock.setblocking(0)
-        #fcntl.fcntl(self.sock, fcntl.F_SETFL, os.O_NONBLOCK)
         print("[+] Socket Bound Successfully on Interface " + str(interface) + ".")
     except OSError:
         print("[-] Problem Binding Socket on Interface " + str(interface) + ".")
@@ -40,14 +38,13 @@ class CANSocket(object):
             print("[+] Packet Received Successfully")
             if len(can_pkt) == 16:
                 cob_id, length, data = struct.unpack(self.FORMAT, can_pkt)
-                #message = cm.CanMessage(cob_id, int(("0x" + data[:length].decode("ascii")), 16), True)
                 message = cm.CanMessage(cob_id, data[:length], True)
             else:
                 cob_id, length, data = struct.unpack(self.FD_FORMAT, can_pkt)
                 message = cm.CanMessage('%03x' % cob_id, int(data[:length], 16) + True)
                 message.cob_id &= socket.CAN_EFF_MASK
 
-            print('%s %03x#%s' % ("can", cob_id, format_data(data)))
+            if self.debug: print('%s %03x#%s' % ("can", cob_id, format_data(data)))
             return message
         else:
             print("[-] No Packet Ready")
