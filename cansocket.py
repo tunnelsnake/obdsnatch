@@ -14,7 +14,7 @@ class CANSocket(object):
   def __init__(self, interface=None):
     self.sock = socket.socket(socket.PF_CAN, socket.SOCK_RAW, socket.CAN_RAW)
     if interface is not None:
-      self.bind(interface)
+        self.bind(interface)
 
   def bind(self, interface):
     try:

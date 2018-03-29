@@ -16,9 +16,9 @@ class OBDSnatch:
             rbus_message = self.rbus.recv()
             fbus_message = self.fbus.recv()
 
-            if rbus_message != None:
+            if rbus_message != None or rbus_message.cob_id >= 0x7E7:
                 self.fbus.send(rbus_message)
-            if fbus_message != None:
+            if fbus_message.cob_id == 0x7DF:
                 self.rbus.send(fbus_message)
         sleep(.002)
 
