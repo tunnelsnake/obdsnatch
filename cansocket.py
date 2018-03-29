@@ -1,4 +1,4 @@
-
+import traceback
 import select
 import socket
 import struct
@@ -26,6 +26,7 @@ class CANSocket(object):
         print("[+] Socket Bound Successfully on Interface " + str(interface) + ".")
     except OSError:
         print("[-] Problem Binding Socket on Interface " + str(interface) + ".")
+        traceback.print_exc()
         print("[-] Try Killing Other Python Processes.")
 
   def send(self, message, flags=0):
