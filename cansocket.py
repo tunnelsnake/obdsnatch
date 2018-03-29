@@ -8,11 +8,11 @@ class CANSocket(object):
   FORMAT = "<IB3x8s"
   FD_FORMAT = "<IB3x64s"
   CAN_RAW_FD_FRAMES = 5
-  CAN_FILTER = 0x7DF
   socktimeout = .25
   debug = True
 
-  def __init__(self, interface=None):
+  def __init__(self, interface=None, can_filter_id=0x000, can_filter_mask=0x000):
+    self.canfilter = struct.pack("=II", can_filter_id, can_filter_mask)
     self.sock = socket.socket(socket.PF_CAN, socket.SOCK_RAW, socket.CAN_RAW)
     if interface is not None:
         self.bind(interface)
@@ -20,8 +20,8 @@ class CANSocket(object):
   def bind(self, interface):
     try:
         self.sock.bind((interface,))
-        self.sock.setsockopt(socket.SOL_CAN_RAW, self.CAN_RAW_FD_FRAMES, 1)
-        self.sock.setsockopt(socket.CAN_RAW_FILTER, self.CAN_FILTER, 1)
+        self.sock.setsockopt(socket.SOL_CAN_RAW, socket.CAN_RAW_FILTER, self.canfilter)
+        #self.sock.setsockopt(socket.SOL_CAN_RAW, self.CAN_RAW_FD_FRAMES, 1)
         self.sock.setblocking(0)
         print("[+] Socket Bound Successfully on Interface " + str(interface) + ".")
     except OSError:
