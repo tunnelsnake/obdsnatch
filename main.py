@@ -20,6 +20,7 @@ class OBDSnatch:
                 self.fbus.send(rbus_message)
             if fbus_message != None:
                 self.rbus.send(fbus_message)
+        sleep(.002)
 
 o = OBDSnatch()
 o.start()
