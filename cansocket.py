@@ -8,6 +8,7 @@ class CANSocket(object):
   FORMAT = "<IB3x8s"
   FD_FORMAT = "<IB3x64s"
   CAN_RAW_FD_FRAMES = 5
+  CAN_FILTER = 0x7DF
   socktimeout = .25
   debug = True
 
@@ -20,6 +21,7 @@ class CANSocket(object):
     try:
         self.sock.bind((interface,))
         self.sock.setsockopt(socket.SOL_CAN_RAW, self.CAN_RAW_FD_FRAMES, 1)
+        self.sock.setsockopt(socket.CAN_RAW_FILTER, self.CAN_FILTER, 1)
         self.sock.setblocking(0)
         print("[+] Socket Bound Successfully on Interface " + str(interface) + ".")
     except OSError:
