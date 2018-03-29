@@ -1,8 +1,8 @@
 import cansocket as cs
 
 class OBDSnatch:
-    rbus_interface = "can0"
-    fbus_interface = "can1"
+    rbus_interface = "can1"
+    fbus_interface = "can0"
 
     def __init__(self):
         print("Starting OBDSnatch...")
