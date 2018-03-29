@@ -29,7 +29,7 @@ class CANSocket(object):
   def send(self, message, flags=0):
         can_pkt = struct.pack(self.FORMAT, message.cob_id, message.datalen, message.data)
         self.sock.send(can_pkt)
-        print("[+] Message Sent")
+        #print("[+] Message Sent")
 
   def recv(self, flags=0):
         ready = select.select([self.sock], [], [], self.socktimeout)

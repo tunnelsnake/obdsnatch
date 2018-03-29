@@ -18,9 +18,11 @@ class OBDSnatch:
 
             if rbus_message != None:
                 if rbus_message.cob_id >= 0x7E7:
+                    print("[+] Inspection Response Message Detected")
                     self.fbus.send(rbus_message)
             if fbus_message != None:
                 if fbus_message.cob_id == 0x7DF:
+                    print("[+] Reader Query Message Detected")
                     self.rbus.send(fbus_message)
         sleep(.002)
 
