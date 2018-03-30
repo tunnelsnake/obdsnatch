@@ -8,7 +8,7 @@ class OBDSnatch:
         print("Starting OBDSnatch...")
         print("[+] Real Bus Interface: " + self.rbus_interface)
         print("[+] Fake Bus Interface: " + self.fbus_interface)
-        self.rbus = cs.CANSocket(self.rbus_interface, 0x7EF, 0x1F0, True)
+        self.rbus = cs.CANSocket(self.rbus_interface, 0x7EF, 0x1F0)
         self.fbus = cs.CANSocket(self.fbus_interface, 0x7DF, 0x000)
 
     def start(self):
