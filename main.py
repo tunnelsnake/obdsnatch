@@ -36,11 +36,11 @@ class OBDSnatch:
         pass
 
     def initlogging(self):
-        self.logger = logging.getLogger("test")
-        self.logger.basicConfig(level=logging.DEBUG,
+        logging.basicConfig(level=logging.DEBUG,
                             format='%(asctime)s %(levelname)s %(message)s',
                             filename=self.createlogname(),
                             filemode='w')
+        self.logger = logging.getLogger(__name__)
         #logging.addHandler(logging.StreamHandler())
 
     def createlogname(self):
