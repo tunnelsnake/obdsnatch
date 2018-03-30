@@ -16,8 +16,7 @@ class CANSocket(object):
     if not use_block_filter:
         self.canfilter = struct.pack("=II", can_filter_id, can_filter_mask)
     else:
-        self.canfilter = struct.pack("=IIIIIIIIIIIIIIII", 0x7E8, 0x000, 0x7E9, 0x000, 0x7EA, 0x000, 0x7EB, 0x000, 0x7EC, 0x000, 0x7ED,
-                                     0x000, 0x7EE, 0x000, 0x7EF, 0x000)
+        self.canfilter = struct.pack("=II", 0x7E8, 0x110)
     self.sock = socket.socket(socket.PF_CAN, socket.SOCK_RAW, socket.CAN_RAW)
     if interface is not None:
         self.bind(interface)
