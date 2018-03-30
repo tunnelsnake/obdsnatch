@@ -54,7 +54,7 @@ class CANSocket(object):
             if self.debug: print('%s %03x#%s' % ("can", cob_id, format_data(data)))
             return message
         else:
-            print("[-] No Packet Ready")
+            #print("[-] No Packet Ready")
             return None
 
 
