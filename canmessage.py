@@ -7,7 +7,6 @@ class CanMessage:
     def __init__(self, cob_id, data, recv_flag=True):
         self.cob_id = cob_id
         self.data = data
-        self.datalen = len(data)
         self.recv_flag = recv_flag
         if self.debug:
             print("MESSAGE CREATED")
