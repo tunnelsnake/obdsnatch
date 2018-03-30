@@ -20,10 +20,6 @@ class OBDSnatch:
 
     def start(self):
 
-        message = cm.CanMessage(0x7df, 0x0101000000000000)
-        self.logger.info("Sending Crafted Message")
-        self.rbus.send(message)
-
         while(True):
             rbus_message = self.rbus.recv()
             fbus_message = self.fbus.recv()
