@@ -3,6 +3,7 @@ import canmessage as cm
 import os
 import datetime
 import logging
+import subprocess
 
 class OBDSnatch:
     rbus_interface = "can1"
@@ -43,6 +44,7 @@ class OBDSnatch:
         ts = datetime.datetime.now().timestamp()
         path = os.getcwd()
         filename = path + "/logs/" + str(ts)[10:].strip('.') + ".log"
+        process = subprocess.Popen(['touch', filename], stdout=None, stderr=None)
         return filename
 
 
