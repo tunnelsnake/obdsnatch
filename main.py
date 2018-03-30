@@ -15,8 +15,8 @@ class OBDSnatch:
         self.logger.info("Using Logfile " + self.logfilename)
         self.logger.info("[+] Real Bus Interface: " + self.rbus_interface)
         self.logger.info("[+] Fake Bus Interface: " + self.fbus_interface)
-        self.rbus = cs.CANSocket(self.rbus_interface, 0x7EF, 0x1F0, self.logger)
-        self.fbus = cs.CANSocket(self.fbus_interface, 0x7DF, 0x000, self.logger)
+        self.rbus = cs.CANSocket(self.rbus_interface, 0x000, 0x000, self.logger)   #0x7ef , 0x1F0
+        self.fbus = cs.CANSocket(self.fbus_interface, 0x000, 0x000, self.logger)   #0x7df , 0x000
 
     def start(self):
 
@@ -30,7 +30,7 @@ class OBDSnatch:
             if fbus_message != None:
                     if fbus_message.cob_id == 0x7df:
                         logging.info("[+] Reader Query Message Detected")
-                        self.rbus.send(fbus_message)
+                    self.rbus.send(fbus_message)
 
     def analyze(self, message=cm.CanMessage):
         pass
