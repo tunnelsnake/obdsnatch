@@ -48,7 +48,7 @@ class OBDSnatch:
         ts = datetime.datetime.now().timestamp()
         path = os.getcwd()
         self.logfilename = path + "/logs/" + str(ts)[10:].strip('.') + ".log"
-        process = subprocess.Popen(['touch', filename], stdout=None, stderr=None)
+        process = subprocess.Popen(['touch', self.logfilename], stdout=None, stderr=None)
         return self.logfilename
 
 
