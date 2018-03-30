@@ -1,7 +1,7 @@
 import cansocket as cs
 import canmessage as cm
 import os
-import time
+import datetime
 import logging
 
 class OBDSnatch:
@@ -40,7 +40,9 @@ class OBDSnatch:
                             filemode='w')
 
     def createlogname(self):
-        filename = str.strip(time.strptime(("%a%d%b%Y%H:%M:%S", time.gmtime())))
+        ts = datetime.datetime.now().timestamp()
+        path = os.getcwd()
+        filename = path + "/logs/" + ts + ".log"
         return filename
 
 
