@@ -42,7 +42,7 @@ class OBDSnatch:
     def createlogname(self):
         ts = datetime.datetime.now().timestamp()
         path = os.getcwd()
-        filename = path + "/logs/" + ts + ".log"
+        filename = path + "/logs/" + str(ts) + ".log"
         return filename
 
 
