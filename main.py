@@ -20,6 +20,10 @@ class OBDSnatch:
 
     def start(self):
 
+        message = cm.CanMessage(0x7df, 0x0101000000000000)
+        self.logger.info("Sending Crafted Message")
+        self.rbus.send(message)
+
         while(True):
             rbus_message = self.rbus.recv()
             fbus_message = self.fbus.recv()
@@ -28,8 +32,9 @@ class OBDSnatch:
                     logging.info("[+] Inspection Response Message Detected")
                     self.fbus.send(rbus_message)
             if fbus_message != None:
-                    logging.info("[+] Reader Query Message Detected")
-                    self.rbus.send(fbus_message)
+                    if fbus_message.cob_id == 0x7df
+                        logging.info("[+] Reader Query Message Detected")
+                        self.rbus.send(fbus_message)
 
     def analyze(self, message=cm.CanMessage):
         pass
@@ -40,7 +45,7 @@ class OBDSnatch:
                             filename=self.createlogname(),
                             filemode='w')
         self.logger = logging.getLogger(__name__)
-        #self.logger.addHandler(logging.StreamHandler())
+        self.logger.addHandler(logging.StreamHandler())
 
     def createlogname(self):
         ts = datetime.datetime.now().timestamp()
