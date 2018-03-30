@@ -3,6 +3,7 @@ import select
 import socket
 import struct
 import canmessage as cm
+import logging
 
 class CANSocket(object):
   FORMAT = "<IB3x8s"
@@ -31,11 +32,11 @@ class CANSocket(object):
         self.sock.bind((interface,))
         self.sock.setsockopt(socket.SOL_CAN_RAW, socket.CAN_RAW_FILTER, self.canfilter)
         self.sock.setblocking(0)
-        print("[+] Socket Bound Successfully on Interface " + self.interface + ".")
+        logging.info("[+] Socket Bound Successfully on Interface " + self.interface + ".")
     except OSError:
-        print("[-] Problem Binding Socket on Interface " + self.interface + ".")
+        logging.info("[-] Problem Binding Socket on Interface " + self.interface + ".")
         traceback.print_exc()
-        print("[-] Try Killing Other Python Processes.")
+        logging.info("[-] Try Killing Other Python Processes.")
 
   #
   # Send a canmessage object over the socket
@@ -44,7 +45,7 @@ class CANSocket(object):
   def send(self, message, flags=0):
         can_pkt = struct.pack(self.FORMAT, message.cob_id, message.datalen, message.data)
         self.sock.send(can_pkt)
-        print("[+] Message Sent on Interface " + self.interface + ".")
+        logging.info("[+] Message Sent on Interface " + self.interface + ".")
 
   #
   # Listen for messages on the bus with asynchronous socket
@@ -54,7 +55,7 @@ class CANSocket(object):
         ready = select.select([self.sock], [], [], self.socktimeout)
         if ready[0]:
             can_pkt = self.sock.recv(72)
-            print("[+] Packet Received Successfully on Interface " + self.interface + ".")
+            logging.info("[+] Packet Received Successfully on Interface " + self.interface + ".")
             if len(can_pkt) == 16:
                 cob_id, length, data = struct.unpack(self.FORMAT, can_pkt)
                 message = cm.CanMessage(cob_id, data[:length], True)
@@ -63,7 +64,7 @@ class CANSocket(object):
                 message = cm.CanMessage('%03x' % cob_id, int(data[:length], 16) + True)
                 message.cob_id &= socket.CAN_EFF_MASK
 
-            if self.debug: print('%s %03x#%s' % (self.interface + ": ", cob_id, self.format_data(data)))
+            logging.debug('%s %03x#%s' % (self.interface + ": ", cob_id, self.format_data(data)))
             return message
         else:
             return None
