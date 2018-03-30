@@ -32,6 +32,8 @@ class OBDSnatch:
                         logging.info("[+] Reader Query Message Detected")
                     self.rbus.send(fbus_message)
 
+            subprocess.Popen(['cansend', 'can0', '7df#0101'])
+
     def analyze(self, message=cm.CanMessage):
         pass
 
