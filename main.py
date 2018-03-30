@@ -22,7 +22,7 @@ class OBDSnatch:
 
         message = cm.CanMessage(0x7df, "\x01\x01\x00\x00\x00\x00\x00\x00")
         self.rbus.send(message)
-        self.logger.info("Sent Message")
+        print("Sent Message")
         while(True):
             rbus_message = self.rbus.recv()
             fbus_message = self.fbus.recv()
