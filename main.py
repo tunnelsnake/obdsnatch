@@ -20,17 +20,19 @@ class OBDSnatch:
 
     def start(self):
 
-        subprocess.Popen(['cansend', 'can0', '7df#0101'])
+        message = cm.CanMessage(0x7df, "\x01\x01\x00\x00\x00\x00\x00\x00")
+        self.rbus.send(message)
+        self.logger.info("Sent Message")
         while(True):
             rbus_message = self.rbus.recv()
             fbus_message = self.fbus.recv()
 
             if rbus_message != None:
-                    logging.info("[+] Inspection Response Message Detected")
+                    self.logger.info("[+] Inspection Response Message Detected")
                     self.fbus.send(rbus_message)
             if fbus_message != None:
                     if fbus_message.cob_id == 0x7df:
-                        logging.info("[+] Reader Query Message Detected")
+                        self.logger.info("[+] Reader Query Message Detected")
                     self.rbus.send(fbus_message)
 
     def analyze(self, message=cm.CanMessage):
