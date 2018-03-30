@@ -11,38 +11,50 @@ class CANSocket(object):
   socktimeout = .00001
   debug = True
 
-  def __init__(self, interface=None, can_filter_id=0x000, can_filter_mask=0x000, use_block_filter=False):
+  #
+  # Set up the socket with socket filters, then bind.
+  #
+
+  def __init__(self, interface=None, can_filter_id=0x000, can_filter_mask=0x000):
     self.interface = interface
-    if not use_block_filter:
-        self.canfilter = struct.pack("=II", can_filter_id, can_filter_mask)
-    else:
-        self.canfilter = struct.pack("=II", 0x7E8, 0x110)
+    self.canfilter = struct.pack("=II", can_filter_id, can_filter_mask)
     self.sock = socket.socket(socket.PF_CAN, socket.SOCK_RAW, socket.CAN_RAW)
     if interface is not None:
         self.bind(interface)
+
+  #
+  # Bind a socket that has been initialized.
+  #
 
   def bind(self, interface):
     try:
         self.sock.bind((interface,))
         self.sock.setsockopt(socket.SOL_CAN_RAW, socket.CAN_RAW_FILTER, self.canfilter)
-        #self.sock.setsockopt(socket.SOL_CAN_RAW, self.CAN_RAW_FD_FRAMES, 1)
         self.sock.setblocking(0)
-        print("[+] Socket Bound Successfully on Interface " + str(interface) + ".")
+        print("[+] Socket Bound Successfully on Interface " + self.interface + ".")
     except OSError:
-        print("[-] Problem Binding Socket on Interface " + str(interface) + ".")
+        print("[-] Problem Binding Socket on Interface " + self.interface + ".")
         traceback.print_exc()
         print("[-] Try Killing Other Python Processes.")
+
+  #
+  # Send a canmessage object over the socket
+  #
 
   def send(self, message, flags=0):
         can_pkt = struct.pack(self.FORMAT, message.cob_id, message.datalen, message.data)
         self.sock.send(can_pkt)
-        print("[+] Message Sent on Interface " + self.interface)
+        print("[+] Message Sent on Interface " + self.interface + ".")
+
+  #
+  # Listen for messages on the bus with asynchronous socket
+  #
 
   def recv(self, flags=0):
         ready = select.select([self.sock], [], [], self.socktimeout)
         if ready[0]:
             can_pkt = self.sock.recv(72)
-            print("[+] Packet Received Successfully")
+            print("[+] Packet Received Successfully on Interface " + self.interface + ".")
             if len(can_pkt) == 16:
                 cob_id, length, data = struct.unpack(self.FORMAT, can_pkt)
                 message = cm.CanMessage(cob_id, data[:length], True)
@@ -51,28 +63,30 @@ class CANSocket(object):
                 message = cm.CanMessage('%03x' % cob_id, int(data[:length], 16) + True)
                 message.cob_id &= socket.CAN_EFF_MASK
 
-            if self.debug: print('%s %03x#%s' % ("can", cob_id, format_data(data)))
+            if self.debug: print('%s %03x#%s' % (self.interface + ": ", cob_id, self.format_data(data)))
             return message
         else:
-            #print("[-] No Packet Ready")
             return None
 
+  #
+  # Used only to format the data for printing.
+  #
 
-def format_data(data):
+  def format_data(self, data):
     return ''.join([hex(byte)[2:] for byte in data])
 
 
-# def generate_bytes(data_int):
-#     #hex_string = '0x{:02x}'.format(data_int)
-#     hex_string = '0x{:02x}'.format(data_int)
-#     if len(hex_string) % 2 != 0:
-#       hex_string = "0" + hex_string
-#
-#     int_array = []
-#     for i in range(0, len(hex_string), 2):
-#         int_array.append(int((hex_string[i:i+2], 16)))
-#
-#     return bytes(int_array)
+
+
+
+
+
+
+
+
+
+
+
 
 
 

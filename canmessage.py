@@ -14,3 +14,9 @@ class CanMessage:
             print("COB ID: %03x" % self.cob_id)
             print("DATALEN: " + str(self.datalen))
             print("RECV FLAG: " + str(recv_flag))
+
+    def getmode(self):
+        return self.data[0]
+
+    def getpid(self):
+        return self.data[1]

@@ -1,4 +1,8 @@
 import cansocket as cs
+import canmessage as cm
+import os
+import time
+import logging
 
 class OBDSnatch:
     rbus_interface = "can1"
@@ -12,6 +16,7 @@ class OBDSnatch:
         self.fbus = cs.CANSocket(self.fbus_interface, 0x7DF, 0x000)
 
     def start(self):
+        self.initlogging()
         while(True):
             rbus_message = self.rbus.recv()
             fbus_message = self.fbus.recv()
@@ -24,6 +29,20 @@ class OBDSnatch:
                 if fbus_message.cob_id == 0x7DF:
                     print("[+] Reader Query Message Detected")
                     self.rbus.send(fbus_message)
+
+    def intercept(self, message=cm.CanMessage):
+        pass
+
+    def initlogging(self):
+        logging.basicConfig(level=logging.DEBUG,
+                            format='%(asctime)s %(levelname)s %(message)s',
+                            filename=self.createlogname(),
+                            filemode='w')
+
+    def createlogname(self):
+        filename = str.strip(time.trftime("%a%d%b%Y%H:%M:%S", time.gmtime()))
+        return filename
+
 
 o = OBDSnatch()
 o.start()
