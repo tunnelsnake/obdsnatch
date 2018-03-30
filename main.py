@@ -20,6 +20,7 @@ class OBDSnatch:
 
     def start(self):
 
+        i = 1
         while(True):
             rbus_message = self.rbus.recv()
             fbus_message = self.fbus.recv()
@@ -31,8 +32,8 @@ class OBDSnatch:
                     if fbus_message.cob_id == 0x7df:
                         logging.info("[+] Reader Query Message Detected")
                     self.rbus.send(fbus_message)
-
-            subprocess.Popen(['cansend', 'can0', '7df#0101'])
+            i += 1
+            if i % 1000 == 0: subprocess.Popen(['cansend', 'can0', '7df#0101'])
 
     def analyze(self, message=cm.CanMessage):
         pass
