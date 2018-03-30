@@ -20,7 +20,7 @@ class OBDSnatch:
 
     def start(self):
 
-        message = cm.CanMessage(0x7df, "\x01\x01\x00\x00\x00\x00\x00\x00")
+        message = cm.CanMessage(0x7df, b"\x01\x01\x00\x00\x00\x00\x00\x00")
         self.rbus.send(message)
         print("Sent Message")
         while(True):
