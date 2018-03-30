@@ -12,6 +12,7 @@ class OBDSnatch:
     def __init__(self):
         self.initlogging()
         self.logger.info("Starting OBDSnatch...")
+        self.logger.info("Using Logfile " + self.logfilename)
         self.logger.info("[+] Real Bus Interface: " + self.rbus_interface)
         self.logger.info("[+] Fake Bus Interface: " + self.fbus_interface)
         self.rbus = cs.CANSocket(self.rbus_interface, 0x7EF, 0x1F0, self.logger)
@@ -46,9 +47,9 @@ class OBDSnatch:
     def createlogname(self):
         ts = datetime.datetime.now().timestamp()
         path = os.getcwd()
-        filename = path + "/logs/" + str(ts)[10:].strip('.') + ".log"
+        self.logfilename = path + "/logs/" + str(ts)[10:].strip('.') + ".log"
         process = subprocess.Popen(['touch', filename], stdout=None, stderr=None)
-        return filename
+        return self.logfilename
 
 
 o = OBDSnatch()
