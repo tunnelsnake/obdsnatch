@@ -11,9 +11,13 @@ class CANSocket(object):
   socktimeout = .25
   debug = True
 
-  def __init__(self, interface=None, can_filter_id=0x000, can_filter_mask=0x000):
+  def __init__(self, interface=None, can_filter_id=0x000, can_filter_mask=0x000, use_block_filter=False):
     self.interface = interface
-    self.canfilter = struct.pack("=II", can_filter_id, can_filter_mask)
+    if not use_block_filter:
+        self.canfilter = struct.pack("=II", can_filter_id, can_filter_mask)
+    else:
+        self.canfilter = struct.pack("=II", 0x7E8, 0x000, 0x7E9, 0x000, 0x7EA, 0x000, 0x7EB, 0x000, 0x7EC, 0x000, 0x7ED,
+                                     0x000, 0x7EE, 0x000, 0x7EF, 0x000)
     self.sock = socket.socket(socket.PF_CAN, socket.SOCK_RAW, socket.CAN_RAW)
     if interface is not None:
         self.bind(interface)
