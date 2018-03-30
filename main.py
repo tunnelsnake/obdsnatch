@@ -40,7 +40,7 @@ class OBDSnatch:
                             filemode='w')
 
     def createlogname(self):
-        filename = str.strip(time.trftime("%a%d%b%Y%H:%M:%S", time.gmtime()))
+        filename = str.strip(time.strptime(("%a%d%b%Y%H:%M:%S", time.gmtime())))
         return filename
 
 
