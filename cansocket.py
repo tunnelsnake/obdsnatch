@@ -8,7 +8,7 @@ class CANSocket(object):
   FORMAT = "<IB3x8s"
   FD_FORMAT = "<IB3x64s"
   CAN_RAW_FD_FRAMES = 5
-  socktimeout = .25
+  socktimeout = .00001
   debug = True
 
   def __init__(self, interface=None, can_filter_id=0x000, can_filter_mask=0x000, use_block_filter=False):
