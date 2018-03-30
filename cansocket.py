@@ -52,7 +52,6 @@ class CANSocket(object):
   #
 
   def recv(self, flags=0):
-        self.logger.info("TEST MESSAGE")
         ready = select.select([self.sock], [], [], self.socktimeout)
         if ready[0]:
             can_pkt = self.sock.recv(72)

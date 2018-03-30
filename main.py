@@ -41,7 +41,7 @@ class OBDSnatch:
                             filename=self.createlogname(),
                             filemode='w')
         self.logger = logging.getLogger(__name__)
-        #logging.addHandler(logging.StreamHandler())
+        self.logger.addHandler(logging.StreamHandler())
 
     def createlogname(self):
         ts = datetime.datetime.now().timestamp()
