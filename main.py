@@ -11,8 +11,8 @@ class OBDSnatch:
 
     def __init__(self):
         self.initlogging()
-        self.logger.info("Starting OBDSnatch...")
-        self.logger.info("Using Logfile " + self.logfilename)
+        self.logger.info("[+] Starting OBDSnatch...")
+        self.logger.info("[+]Using Logfile " + self.logfilename)
         self.logger.info("[+] Real Bus Interface: " + self.rbus_interface)
         self.logger.info("[+] Fake Bus Interface: " + self.fbus_interface)
         self.rbus = cs.CANSocket(self.rbus_interface, 0x7ef, 0x1F0, self.logger)   #0x7ef , 0x1F0
@@ -20,20 +20,28 @@ class OBDSnatch:
 
     def start(self):
 
-        message = cm.CanMessage(0x7df, b"\x01\x01\x00\x00\x00\x00\x00\x00")
-        self.rbus.send(message)
-        print("Sent Message")
-        while(True):
-            rbus_message = self.rbus.recv()
-            fbus_message = self.fbus.recv()
+        try:
+            message = cm.CanMessage(0x7df, b"\x01\x01\x00\x00\x00\x00\x00\x00")
+            self.rbus.send(message)
+            print("[+] Sent Test Message:  PID 01, MODE 01")
+            while(True):
+                rbus_message = self.rbus.recv()
+                fbus_message = self.fbus.recv()
 
-            if rbus_message != None:
-                    self.logger.info("[+] Inspection Response Message Detected")
-                    self.fbus.send(rbus_message)
-            if fbus_message != None:
-                    if fbus_message.cob_id == 0x7df:
-                        self.logger.info("[+] Reader Query Message Detected")
-                    self.rbus.send(fbus_message)
+                if rbus_message != None:
+                        self.logger.info("[+] Inspection Response Message Detected")
+                        self.fbus.send(rbus_message)
+                if fbus_message != None:
+                        if fbus_message.cob_id == 0x7df:
+                            self.logger.info("[+] Reader Query Message Detected")
+                        self.rbus.send(fbus_message)
+        except KeyboardInterrupt:
+              self.logger.info("[+] Keyboard Interrupt Received.")
+              self.logger.info("[+] Cleaning up Sockets.")
+              self.rbus.sock.close()
+              self.fbus.sock.close()
+              self.logger.info("[+] Sockets Successfully Closed.")
+              self.logger.info("[+] Using Logfile " + self.logfilename + ".")
 
     def analyze(self, message=cm.CanMessage):
         pass
@@ -52,6 +60,21 @@ class OBDSnatch:
         self.logfilename = path + "/logs/" + str(ts)[10:].strip('.') + ".log"
         process = subprocess.Popen(['touch', self.logfilename], stdout=None, stderr=None)
         return self.logfilename
+
+    def cleanup(self):
+         self.logger.info("[+] Cleaning up Sockets.")
+         self.rbus.sock.close()
+         self.fbus.sock.close()
+         self.logger.info("[+] Sockets Successfully Closed.")
+         self.logger.info("[+] Using Logfile " + self.logfilename + ".")
+         print("Have A Lovely Day.")
+
+
+
+
+
+
+
 
 
 o = OBDSnatch()
