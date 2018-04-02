@@ -15,7 +15,7 @@ class OBDSnatch:
         self.logger.info("[+]Using Logfile " + self.logfilename)
         self.logger.info("[+] Real Bus Interface: " + self.rbus_interface)
         self.logger.info("[+] Fake Bus Interface: " + self.fbus_interface)
-        self.rbus = cs.CANSocket(self.rbus_interface, 0x7ef, 0x1F0, self.logger)   #0x7ef , 0x1F0
+        self.rbus = cs.CANSocket(self.rbus_interface, 0x7e8, 0x1F0, self.logger)   #0x7ef , 0x1F0
         self.fbus = cs.CANSocket(self.fbus_interface, 0x7df, 0x000, self.logger)   #0x7df , 0x000
 
     def start(self):
