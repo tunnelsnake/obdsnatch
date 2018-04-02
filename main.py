@@ -45,7 +45,7 @@ class OBDSnatch:
               self.logger.info("[+] Using Logfile " + self.logfilename + ".")
 
     def intercept(self, message=cm.CanMessage):
-        self.logger.debug(b"%s" % (chr(message.getbyte(1))))
+        self.logger.debug("%x" % (chr(message.getbyte(1))))
 
     def initlogging(self):
         logging.basicConfig(level=logging.DEBUG,
