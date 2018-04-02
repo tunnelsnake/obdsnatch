@@ -21,7 +21,7 @@ class OBDSnatch:
     def start(self):
 
         try:
-            message = cm.CanMessage(0x7df, b"\x02\x0D\x00\x00\x00\x00\x00\x00")
+            message = cm.CanMessage(0x7df, b"\x02\x01\x01\x00\x00\x00\x00\x00")  #I think all reader messages are prepended by a '0x02'
             self.rbus.send(message)
             print("[+] Sent Test Message:  PID 01, MODE 01")
             while(True):
