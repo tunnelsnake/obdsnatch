@@ -15,8 +15,12 @@ class CanMessage:
             print("DATALEN: " + str(self.datalen))
             print("RECV FLAG: " + str(recv_flag))
 
-    def getmode(self):
-        return self.data[0]
+    #
+    # This function is completely unprotected and has no logic to deal with data that doesn't exist
+    #
+
+    def getbyte(self, bytenum):
+        return self.data[bytenum]
 
     def getpid(self):
         return self.data[1]

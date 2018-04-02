@@ -34,6 +34,7 @@ class OBDSnatch:
                 if fbus_message != None:
                         if fbus_message.cob_id == 0x7df:
                             self.logger.info("[+] Reader Query Message Detected")
+                        self.intercept(fbus_message)
                         self.rbus.send(fbus_message)
         except KeyboardInterrupt:
               self.logger.info("[+] Keyboard Interrupt Received.")
@@ -43,8 +44,8 @@ class OBDSnatch:
               self.logger.info("[+] Sockets Successfully Closed.")
               self.logger.info("[+] Using Logfile " + self.logfilename + ".")
 
-    def analyze(self, message=cm.CanMessage):
-        pass
+    def intercept(self, message=cm.CanMessage):
+        print(b"%s" % (message.getbyte(1)))
 
     def initlogging(self):
         logging.basicConfig(level=logging.DEBUG,
