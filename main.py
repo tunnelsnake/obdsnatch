@@ -45,7 +45,8 @@ class OBDSnatch:
               self.logger.info("[+] Using Logfile " + self.logfilename + ".")
 
     def intercept(self, message=cm.CanMessage):
-        if message.getbyte(0) == 0x02 and message.getbyte(1) == 0x01 and message.getbyte(2) == 0x00:
+        if message.getbyte(0) == 0x02 and message.getbyte(1) == 0x01 and message.getbyte(2) == 0x0c:
+            self.fbus.send(cm.CanMessage(0x7e8, b"\x44\x1c\x27\x61\x00\x00\x00\x00"))
             pass
 
     def initlogging(self):
