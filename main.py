@@ -39,8 +39,8 @@ class OBDSnatch:
                 if fbus_message != None:
                         if fbus_message.cob_id == 0x7df:
                             self.logger.info("[+] Reader Query Message Detected")
-                        #self.intercept(fbus_message)
-                        self.rbus.send(fbus_message)
+                        self.intercept(fbus_message)
+                        #self.rbus.send(fbus_message)
         except KeyboardInterrupt:
               self.logger.info("[+] Keyboard Interrupt Received.")
               self.logger.info("[+] Cleaning up Sockets.")
@@ -55,7 +55,8 @@ class OBDSnatch:
 
     def intercept(self, message=cm.CanMessage):
         if message.getbyte(0) == 0x02 and message.getbyte(1) == 0x01 and message.getbyte(2) == 0x0c:
-            self.fbus.send(cm.CanMessage(0x7e8, b"\x04\x04\x01\x61\x02\x07\x06\x01"))
+            self.fbus.send(cm.CanMessage(0x7e8, b"\x04\x41\x0c\x0c\x07\x00\x00\x00"))
+            self.fbus.send(cm.CanMessage(0x7e9, b"\x04\x41\x0c\x0c\x0c\x00\x00\x00"))
         else:
             self.fbus.send(message)
 
