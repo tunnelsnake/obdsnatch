@@ -32,7 +32,7 @@ class OBDSnatch:
             message = cm.CanMessage(0x7df, b"\x02\x01\x0c\x00\x00\x00\x00\x00")  #I think all reader messages are prepended by a '0x02'
             self.rbus.send(message)
             print("[+] Sent Test Message:  vehicle rpm")
-            while(True):
+            while True:
                 rbus_message = self.rbus.recv()
                 fbus_message = self.fbus.recv()
 
@@ -42,8 +42,8 @@ class OBDSnatch:
                 if fbus_message != None:
                         if fbus_message.cob_id == 0x7df:
                             self.logger.info("[+] Reader Query Message Detected")
-                        self.intercept(fbus_message)
-                        #self.rbus.send(fbus_message)
+                        #self.intercept(fbus_message)
+                        self.rbus.send(fbus_message)
         except KeyboardInterrupt:
               self.logger.info("[+] Keyboard Interrupt Received.")
               self.logger.info("[+] Cleaning up Sockets.")
