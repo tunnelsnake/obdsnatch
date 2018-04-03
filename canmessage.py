@@ -28,7 +28,7 @@ class CanMessage:
     #                             COB ID            DATA
 
     def getstring(self):
-        retstring = str
+        retstring = ""
         for num in range(0, 7):
             retstring += ('%02x' % (self.getbyte(num)))
         return '%03x#' % self.cob_id + retstring
