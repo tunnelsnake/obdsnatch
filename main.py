@@ -1,12 +1,13 @@
 import cansocket as cs
 import canmessage as cm
+import canparser as cp
 import os
 import datetime
 import logging
 import subprocess
 
-class OBDSnatch:
 
+class OBDSnatch:
     rbus_interface = "can1"
     fbus_interface = "can0"
 
@@ -20,8 +21,9 @@ class OBDSnatch:
         self.logger.info("[+]Using Logfile " + self.logfilename)
         self.logger.info("[+] Real Bus Interface: " + self.rbus_interface)
         self.logger.info("[+] Fake Bus Interface: " + self.fbus_interface)
-        self.rbus = cs.CANSocket(self.rbus_interface, 0x7e8, 0x1F0, self.logger)   #0x7ef , 0x1F0
-        self.fbus = cs.CANSocket(self.fbus_interface, 0x7df, 0x000, self.logger)   #0x7df , 0x000
+        self.rbus = cs.CanSocket(self.rbus_interface, 0x7e8, 0x1F0, self.logger)  # 0x7ef , 0x1F0
+        self.fbus = cs.CanSocket(self.fbus_interface, 0x7df, 0x000, self.logger)  # 0x7df , 0x000
+        self.parser = cp.CanParser(self.logger)
 
     #
     # Start the main loop
@@ -29,43 +31,26 @@ class OBDSnatch:
 
     def start(self):
         try:
+            self.rbus.send(cm.CanMessage(0x7df, b"\x01\x01\x00\x00\x00\x00\x00\x00"))
             while True:
                 rbus_message = self.rbus.recv()
                 fbus_message = self.fbus.recv()
 
-                if rbus_message != None:
-                        self.logger.info("[+] Inspection Response Message Detected")
-                        self.fbus.send(rbus_message)
-                if fbus_message != None:
-                        if fbus_message.cob_id == 0x7df:
-                            self.logger.info("[+] Reader Query Message Detected")
-                        self.intercept(fbus_message)
-                        #self.rbus.send(fbus_message)
+                if rbus_message is not None:
+                    self.logger.info("[+] Inspection Response Message Detected")
+                    self.fbus.send(rbus_message)
+                if fbus_message is not None:
+                    if fbus_message.cob_id == 0x7df:
+                        self.logger.info("[+] Reader Query Message Detected")
+                    self.rbus.send(self.parser.parse(fbus_message))
+
         except KeyboardInterrupt:
-              self.logger.info("[+] Keyboard Interrupt Received.")
-              self.logger.info("[+] Cleaning up Sockets.")
-              self.rbus.sock.close()
-              self.fbus.sock.close()
-              self.logger.info("[+] Sockets Successfully Closed.")
-              self.logger.info("[+] Using Logfile " + self.logfilename + ".")
-
-    #
-    # Takes a message, dissects it, and performs the appropriate action
-    #
-
-    def intercept(self, message=cm.CanMessage):
-        if message.getbyte(0) == 0x02 and message.getbyte(1) == 0x01 and message.getbyte(2) == 0x0c:  #Engine RPM     (Mode 1 PID 12)
-            self.logger.info("[+] Intercepted RPM Request.")
-            self.fbus.send(cm.CanMessage(0x7e8, b"\x04\x41\x0c\x0c\x07\x00\x00\x00"))
-            self.fbus.send(cm.CanMessage(0x7e9, b"\x04\x41\x0c\x0c\x0c\x00\x00\x00"))
-        elif message.getbyte(0) == 0x02 and message.getbyte(1) == 0x01 and message.getbyte(2) == 0x0D: #Vehicle Speed (Mode 1 PID 13)
-            self.logger.info("[+] Intercepted Vehicle Speed Request.")
-            self.fbus.send(cm.CanMessage(0x7e8, b"\x03\x41\x0d\x45\x00\x00\x00\x00"))
-        elif message.getbyte(0) == 0x02 and message.getbyte(1) == 0x01 and message.getbyte(2) == 0x01: #Information Header (Mode 1 PID 1)
-            self.logger.info("[+] Intercepted Main Information Header.")
-            self.fbus.send(cm.CanMessage(0x7e8, b"\x06\x41\x01\x00\x07\xed\x00\x00"))
-        else:
-            self.rbus.send(message)
+            self.logger.info("[+] Keyboard Interrupt Received.")
+            self.logger.info("[+] Cleaning up Sockets.")
+            self.rbus.sock.close()
+            self.fbus.sock.close()
+            self.logger.info("[+] Sockets Successfully Closed.")
+            self.logger.info("[+] Using Logfile " + self.logfilename + ".")
 
     #
     # Start the logging facility
@@ -95,21 +80,13 @@ class OBDSnatch:
     #
 
     def cleanup(self):
-         self.logger.info("[+] Cleaning up Sockets.")
-         self.rbus.sock.close()
-         self.fbus.sock.close()
-         self.logger.info("[+] Sockets Successfully Closed.")
-         self.logger.info("[+] Written to Logfile " + self.logfilename + ".")
-         print("Have A Lovely Day.")
-
-
-
-
-
-
-
+        self.logger.info("[+] Cleaning up Sockets.")
+        self.rbus.sock.close()
+        self.fbus.sock.close()
+        self.logger.info("[+] Sockets Successfully Closed.")
+        self.logger.info("[+] Written to Logfile " + self.logfilename + ".")
+        print("Have A Lovely Day.")
 
 
 o = OBDSnatch()
 o.start()
-

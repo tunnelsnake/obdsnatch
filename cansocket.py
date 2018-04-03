@@ -4,7 +4,7 @@ import socket
 import struct
 import canmessage as cm
 
-class CANSocket(object):
+class CanSocket(object):
   FORMAT = "<IB3x8s"
   FD_FORMAT = "<IB3x64s"
   CAN_RAW_FD_FRAMES = 5
