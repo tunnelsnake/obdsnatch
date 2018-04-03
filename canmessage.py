@@ -30,5 +30,5 @@ class CanMessage:
     def getstring(self):
         retstring = str
         for num in range(0, 7):
-            retstring.join(('%02x' % (self.getbyte(num))))
+            retstring += ('%02x' % (self.getbyte(num)))
         return '%03x#' % self.cob_id + retstring
