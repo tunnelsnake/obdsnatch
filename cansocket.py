@@ -58,7 +58,7 @@ class CANSocket(object):
             self.logger.info("[+] Packet Received Successfully on Interface " + self.interface + ".")
             if len(can_pkt) == 16:
                 cob_id, length, data = struct.unpack(self.FORMAT, can_pkt)
-                message = cm.CanMessage(cob_id, data[:length], True)
+                message = cm.CanMessage(cob_id, data[:8], True) #WAS ORIGINALLY :length
             else:
                 cob_id, length, data = struct.unpack(self.FD_FORMAT, can_pkt)
                 message = cm.CanMessage('%03x' % cob_id, int(data[:length], 16) + True)

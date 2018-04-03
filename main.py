@@ -6,8 +6,13 @@ import logging
 import subprocess
 
 class OBDSnatch:
+
     rbus_interface = "can1"
     fbus_interface = "can0"
+
+    #
+    # Initialize the logger and sockets
+    #
 
     def __init__(self):
         self.initlogging()
@@ -18,8 +23,11 @@ class OBDSnatch:
         self.rbus = cs.CANSocket(self.rbus_interface, 0x7e8, 0x1F0, self.logger)   #0x7ef , 0x1F0
         self.fbus = cs.CANSocket(self.fbus_interface, 0x7df, 0x000, self.logger)   #0x7df , 0x000
 
-    def start(self):
+    #
+    # Start the main loop
+    #
 
+    def start(self):
         try:
             message = cm.CanMessage(0x7df, b"\x02\x01\x0c\x00\x00\x00\x00\x00")  #I think all reader messages are prepended by a '0x02'
             self.rbus.send(message)
@@ -44,11 +52,19 @@ class OBDSnatch:
               self.logger.info("[+] Sockets Successfully Closed.")
               self.logger.info("[+] Using Logfile " + self.logfilename + ".")
 
+    #
+    # Takes a message, dissects it, and performs the appropriate action
+    #
+
     def intercept(self, message=cm.CanMessage):
         if message.getbyte(0) == 0x02 and message.getbyte(1) == 0x01 and message.getbyte(2) == 0x0c:
             self.fbus.send(cm.CanMessage(0x7e8, b"\x04\x04\x01\x61\x02\x07\x06\x01"))
         else:
             self.fbus.send(message)
+
+    #
+    # Start the logging facility
+    #
 
     def initlogging(self):
         logging.basicConfig(level=logging.DEBUG,
@@ -58,12 +74,20 @@ class OBDSnatch:
         self.logger = logging.getLogger(__name__)
         self.logger.addHandler(logging.StreamHandler())
 
+    #
+    # Create a logfile name - based on time
+    #
+
     def createlogname(self):
         ts = datetime.datetime.now().timestamp()
         path = os.getcwd()
         self.logfilename = path + "/logs/" + str(ts)[10:].strip('.') + ".log"
         process = subprocess.Popen(['touch', self.logfilename], stdout=None, stderr=None)
         return self.logfilename
+
+    #
+    # Close the sockets
+    #
 
     def cleanup(self):
          self.logger.info("[+] Cleaning up Sockets.")
