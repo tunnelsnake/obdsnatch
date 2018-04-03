@@ -23,7 +23,7 @@ class CanMessage:
     #
 
     def getbyte(self, bytenum):
-        if (bytenum >= 0 and bytenum <= 7):
+        if (bytenum >= 0 and bytenum <= 8):
             return self.data[bytenum]
         else:
             return 0x00
@@ -36,6 +36,6 @@ class CanMessage:
     def getstring(self):
         retstring = ""
         retstring += ('%02x' % (self.getbyte(0)))
-        for num in range(1, 7):
+        for num in range(1, 8):
             retstring += (':%02x' % (self.getbyte(num)))
         return '%03x#' % self.cob_id + retstring
