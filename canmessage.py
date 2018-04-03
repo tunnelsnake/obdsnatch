@@ -2,7 +2,7 @@ import binascii
 import struct
 
 class CanMessage:
-    debug = False;
+    debug = True
 
     def __init__(self, cob_id, data, recv_flag=True):
         self.cob_id = cob_id
