@@ -46,7 +46,7 @@ class OBDSnatch:
 
     def intercept(self, message=cm.CanMessage):
         if message.getbyte(0) == 0x02 and message.getbyte(1) == 0x01 and message.getbyte(2) == 0x0c:
-            self.fbus.send(cm.CanMessage(0x7e8, b"\x44\x1c\x27\x61\x00\x00\x00\x00"))
+            self.fbus.send(cm.CanMessage(0x7e8, b"\x04\x04\x01\x61\x02\x07\x06\x01"))
         else:
             self.fbus.send(message)
 
