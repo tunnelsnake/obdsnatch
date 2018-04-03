@@ -64,8 +64,7 @@ class CANSocket(object):
                 message = cm.CanMessage('%03x' % cob_id, int(data[:length], 16))
                 message.cob_id &= socket.CAN_EFF_MASK
 
-            self.logger.debug('[+] %s: %s' % (self.interface, message.getstring()))
-            self.logger.debug(message.getstring())
+            self.logger.info('[+] %s: %s' % (self.interface, message.getstring()))
             return message
         else:
             return None
