@@ -97,7 +97,7 @@ class OBDSnatch:
          self.rbus.sock.close()
          self.fbus.sock.close()
          self.logger.info("[+] Sockets Successfully Closed.")
-         self.logger.info("[+] Using Logfile " + self.logfilename + ".")
+         self.logger.info("[+] Written to Logfile " + self.logfilename + ".")
          print("Have A Lovely Day.")
 
 

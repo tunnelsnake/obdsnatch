@@ -2,25 +2,31 @@ import binascii
 import struct
 
 class CanMessage:
-    debug = True
+    debug = False
 
-    def __init__(self, cob_id, data, recv_flag=True):
+    #
+    # Initialize the message container object
+    #
+
+    def __init__(self, cob_id, data):
         self.cob_id = cob_id
         self.data = data
         self.datalen = len(data)
-        self.recv_flag = recv_flag
+
         if self.debug:
             print("MESSAGE CREATED")
             print("COB ID: %03x" % self.cob_id)
             print("DATALEN: " + str(self.datalen))
-            print("RECV FLAG: " + str(recv_flag))
 
     #
-    # This function is completely unprotected and has no logic to deal with data that doesn't exist
+    # Returns an integer
     #
 
     def getbyte(self, bytenum):
-        return self.data[bytenum]
+        if (bytenum >= 0 and bytenum <= 7):
+            return self.data[bytenum]
+        else:
+            return 0x00
 
     #
     # Give back a string with format XXX#00:00:00:00:00:00:00:00
@@ -29,6 +35,7 @@ class CanMessage:
 
     def getstring(self):
         retstring = ""
-        for num in range(0, 7):
-            retstring += ('%02x' % (self.getbyte(num)))
+        retstring += ('%02x' % (self.getbyte(0)))
+        for num in range(1, 7):
+            retstring += (':%02x' % (self.getbyte(num)))
         return '%03x#' % self.cob_id + retstring

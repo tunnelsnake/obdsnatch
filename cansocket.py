@@ -58,10 +58,10 @@ class CANSocket(object):
             self.logger.info("[+] Packet Received Successfully on Interface " + self.interface + ".")
             if len(can_pkt) == 16:
                 cob_id, length, data = struct.unpack(self.FORMAT, can_pkt)
-                message = cm.CanMessage(cob_id, data[:8], True) #WAS ORIGINALLY :length
+                message = cm.CanMessage(cob_id, data[:8]) #WAS ORIGINALLY :length
             else:
                 cob_id, length, data = struct.unpack(self.FD_FORMAT, can_pkt)
-                message = cm.CanMessage('%03x' % cob_id, int(data[:length], 16) + True)
+                message = cm.CanMessage('%03x' % cob_id, int(data[:length], 16))
                 message.cob_id &= socket.CAN_EFF_MASK
 
             self.logger.debug('[+] %s %03x#%s' % (self.interface + ": ", cob_id, self.format_data(data)))
