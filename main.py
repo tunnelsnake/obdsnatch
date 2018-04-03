@@ -59,7 +59,7 @@ class OBDSnatch:
             self.fbus.send(cm.CanMessage(0x7e8, b"\x04\x41\x0c\x0c\x07\x00\x00\x00"))
             self.fbus.send(cm.CanMessage(0x7e9, b"\x04\x41\x0c\x0c\x0c\x00\x00\x00"))
         else:
-            self.fbus.send(message)
+            self.rbus.send(message)
 
     #
     # Start the logging facility
