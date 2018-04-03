@@ -23,7 +23,7 @@ class OBDSnatch:
         self.logger.info("[+] Fake Bus Interface: " + self.fbus_interface)
         self.rbus = cs.CanSocket(self.rbus_interface, 0x7e8, 0x1F0, self.logger)  # 0x7ef , 0x1F0
         self.fbus = cs.CanSocket(self.fbus_interface, 0x7df, 0x000, self.logger)  # 0x7df , 0x000
-        self.parser = cp.CanParser(self.logger)
+        self.parser = cp.CanParser(self.rbus, self.fbus, self.logger)
 
     #
     # Start the main loop
