@@ -34,6 +34,7 @@ class OBDSnatch:
                 print("%02x" % message.getbyte(num))
             self.rbus.send(message)
             print("[+] Sent Test Message:  vehicle rpm")
+            print(message.getstring())
             while True:
                 rbus_message = self.rbus.recv()
                 fbus_message = self.fbus.recv()
