@@ -30,6 +30,8 @@ class OBDSnatch:
     def start(self):
         try:
             message = cm.CanMessage(0x7df, b"\x02\x01\x0c\x00\x00\x00\x00\x00")  #I think all reader messages are prepended by a '0x02'
+            for num in range(0, 8):
+                print("%02x" % message.getbyte(num))
             self.rbus.send(message)
             print("[+] Sent Test Message:  vehicle rpm")
             while True:
