@@ -22,5 +22,13 @@ class CanMessage:
     def getbyte(self, bytenum):
         return self.data[bytenum]
 
-    def getpid(self):
-        return self.data[1]
+    #
+    # Give back a string with format XXX#00:00:00:00:00:00:00:00
+    #
+    #                             COB ID            DATA
+
+    def getstring(self):
+        retstring = str
+        for num in range(0, 7):
+            retstring.join(self.getbyte(num))
+        return '%03x#' % self.cob_id + retstring
