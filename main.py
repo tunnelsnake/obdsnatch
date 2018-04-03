@@ -31,7 +31,7 @@ class OBDSnatch:
 
     def start(self):
         try:
-            testmessage = cm.CanMessage(0x7df, b"\x01\x01\x00\x00\x00\x00\x00\x00")
+            testmessage = cm.CanMessage(0x7df, b"\x02\x01\x01\x00\x00\x00\x00\x00")
             self.logger.info("[+] Sending test message: " + testmessage.getstring())
             self.rbus.send(testmessage)
             while True:
