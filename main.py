@@ -44,7 +44,7 @@ class OBDSnatch:
                 if fbus_message is not None:
                     if fbus_message.cob_id == 0x7df:
                         self.logger.info("[+] Reader Query Message Detected")
-                    self.rbus.send(self.parser.parse(fbus_message))
+                        self.parser.parse(fbus_message)
 
         except KeyboardInterrupt:
             self.logger.info("[+] Keyboard Interrupt Received.")
