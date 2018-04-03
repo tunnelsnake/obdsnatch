@@ -55,9 +55,12 @@ class OBDSnatch:
 
     def intercept(self, message=cm.CanMessage):
         if message.getbyte(0) == 0x02 and message.getbyte(1) == 0x01 and message.getbyte(2) == 0x0c:
-            self.logger.info("[+] Intercepted RPM Request")
+            self.logger.info("[+] Intercepted RPM Request.")
             self.fbus.send(cm.CanMessage(0x7e8, b"\x04\x41\x0c\x0c\x07\x00\x00\x00"))
             self.fbus.send(cm.CanMessage(0x7e9, b"\x04\x41\x0c\x0c\x0c\x00\x00\x00"))
+        elif message.getbyte(0) == 0x02 and message.getbyte(1) == 0x01 and message.getbyte(2) == 0x0D:
+            self.logger.info("[+] Intercepted Vehicle Speed Request.")
+            self.fbus.send(cm.CanMessage(0x7e8, b"\x03\x41\x0d\xff\x00\x00\x00\x00"))
         else:
             self.rbus.send(message)
 
