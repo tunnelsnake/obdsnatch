@@ -28,5 +28,5 @@ class CanParser:
     def parsefake(self, message=cm.CanMessage):
         if message.getbyte(0) == 0x00 and message.getbyte(1) == 0x00 and message.getbyte(2) == 0x00:
             self.logger.info("[+] Empty Message Removed From Stream.")
-        else"
+        else
             self.fbus.send(message)
