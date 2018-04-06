@@ -98,25 +98,18 @@ class OBDSnatch:
     def startresetthread(self, lock):
         with lock:
             self.logger.info("[+] ECU Reset Thread Started.")
-        while(True):
+        while not self.resetthreadexitflag:
             time.sleep(10)
             try:
                 with lock:
-                    if self.resetthreadexitflag:
-                        self.logger.info("[+] ECU Reset Thread Flag Set.")
-                        self.logger.info("[+] ECU Reset Thread Exiting.")
-                        break
                     self.logger.info("[+] Sending Periodic ECU Reset.")
                     self.logger.warning("[+] ECU MESSAGE IS ACTUALLY INFO HEADER FOR DEBUG PURPOSES")
                     self.fbus.send(cm.CanMessage(0x7df, b"\x02\x01\x01\x00\x00\x00\x00\x00"))
-            except KeyboardInterrupt:
-                with lock:
-                    self.logger.info("[+] ECU Reset Thread Exiting.")
-                    break
             except Exception as e:
                 self.logger.info("[-] Periodic ECU Reset Failed.")
                 self.logger.error("[-] " + traceback.print_exc())
-
+        with lock:
+            self.logger.info("[+] Exiting ECU Reset Thread.")
 
 
     #
@@ -149,7 +142,6 @@ class OBDSnatch:
     def cleanup(self):
         self.logger.info("[+] Closing ECU Reset Thread.")
         self.resetthreadexitflag = True
-        time.sleep(2)
         self.t.join()
         self.logger.info("[+] ECU Reset Thread Exited Successfully.")
         self.logger.info("[+] Cleaning up Sockets.")
