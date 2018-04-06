@@ -167,6 +167,7 @@ class OBDSnatch:
         subprocess.Popen(['sudo', 'ifconfig', self.fbus_interface, 'down'], stdout=None, stderr=None)
         subprocess.Popen(['sudo', 'ifconfig', self.rbus_interface, 'up'], stdout=None, stderr=None)
         subprocess.Popen(['sudo', 'ifconfig', self.fbus_interface, 'up'], stdout=None, stderr=None)
+        time.sleep(.25)
         self.rbus = cs.CanSocket(self.rbus_interface, self.rbus_filter, self.rbus_mask, self.logger)
         self.fbus = cs.CanSocket(self.fbus_interface, self.fbus_filter, self.fbus_mask, self.logger)
         self.logger.info("[+] Interfaces Successfully Reset.")
