@@ -14,7 +14,7 @@ import traceback
 class OBDSnatch:
     rbus_interface = "can1"
     fbus_interface = "can0"
-    enable_reset_thread = False
+    enable_reset_thread = True
     reset_thread_time = 5
 
     #
@@ -35,6 +35,8 @@ class OBDSnatch:
             self.lock = threading.Lock()
             self.t = threading.Thread(target=self.startresetthread, args=(self.lock, self.reset_thread_time))
             self.t.start()
+        else:
+            self.logger.warning("[-] ECU Reset Thread Disabled.")
 
     #
     # Start the main loop
