@@ -14,6 +14,7 @@ import traceback
 class OBDSnatch:
     rbus_interface = "can1"
     fbus_interface = "can0"
+    enable_reset_thread = False
     reset_thread_time = 5
 
     #
@@ -29,10 +30,11 @@ class OBDSnatch:
         self.rbus = cs.CanSocket(self.rbus_interface, 0x7e8, 0x1F0, self.logger)  # 0x7ef , 0x1F0
         self.fbus = cs.CanSocket(self.fbus_interface, 0x7df, 0x000, self.logger)  # 0x7df , 0x000
         self.parser = cp.CanParser(self.rbus, self.fbus, self.logger)
-        self.lock = threading.Lock()
-        self.resetthreadexitflag = False
-        self.t = threading.Thread(target=self.startresetthread, args=(self.lock, self.reset_thread_time))
-        self.t.start()
+        if self.enable_reset_thread:
+            self.resetthreadexitflag = False
+            self.lock = threading.Lock()
+            self.t = threading.Thread(target=self.startresetthread, args=(self.lock, self.reset_thread_time))
+            self.t.start()
 
     #
     # Start the main loop
@@ -106,9 +108,11 @@ class OBDSnatch:
                         self.logger.warning("[+] ECU MESSAGE IS ACTUALLY INFO HEADER FOR DEBUG PURPOSES")
                         self.fbus.send(cm.CanMessage(0x7df, b"\x02\x01\x01\x00\x00\x00\x00\x00"))
                         update_time = millis + reset_time
-                except Exception as e:
-                    self.logger.info("[-] Periodic ECU Reset Failed.")
-                    self.logger.error(traceback.print_exc())
+                except OSError:
+                    self.logger.info("[-] OS ERROR. No Available Buffer Space.")
+                    self.logger.info("[-] ECU Reset Thread Sleeping for 30 Seconds.")
+                    update_time = millis + reset_time
+                    time.sleep(30)
 
 
     #
@@ -131,7 +135,7 @@ class OBDSnatch:
         ts = datetime.datetime.now().timestamp()
         path = os.getcwd()
         self.logfilename = path + "/logs/" + str(ts)[10:].strip('.') + ".log"
-        process = subprocess.Popen(['touch', self.logfilename], stdout=None, stderr=None)
+        subprocess.Popen(['touch', self.logfilename], stdout=None, stderr=None)
         return self.logfilename
 
     #
@@ -139,11 +143,12 @@ class OBDSnatch:
     #
 
     def cleanup(self):
-        self.logger.info("[+] Attempting to Close ECU Reset Thread.")
-        self.resetthreadexitflag = True
-        self.t.join(None)
-        self.logger.info("[+] ECU Reset Thread Exited Successfully.")
-        self.logger.info("[+] Cleaning Up Sockets.")
+        if self.enable_reset_thread:
+            self.logger.info("[+] Attempting to Close ECU Reset Thread.")
+            self.resetthreadexitflag = True
+            self.t.join(None)
+            self.logger.info("[+] ECU Reset Thread Exited Successfully.")
+            self.logger.info("[+] Cleaning Up Sockets.")
         self.rbus.sock.close()
         self.fbus.sock.close()
         self.logger.info("[+] Sockets Successfully Closed.")
