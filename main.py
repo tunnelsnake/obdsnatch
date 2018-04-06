@@ -103,7 +103,7 @@ class OBDSnatch:
                 with lock:
                     self.logger.info("[+] Sending Periodic ECU Reset.")
                     self.logger.warning("[+] ECU MESSAGE IS ACTUALLY INFO HEADER FOR DEBUG PURPOSES")
-                    self.fbus.send(0x7df, b"\x02\x01\x01\x00\x00\x00\x00\x00")
+                    self.fbus.send(cm.CanMessage(0x7df, b"\x02\x01\x01\x00\x00\x00\x00\x00"))
             except Exception as e:
                 self.logger.info("[-] Periodic ECU Reset Failed.")
                 self.logger.error("[-] " + traceback.print_exc())
