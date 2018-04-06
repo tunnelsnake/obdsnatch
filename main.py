@@ -14,7 +14,7 @@ import traceback
 class OBDSnatch:
     rbus_interface = "can1"
     fbus_interface = "can0"
-    reset_thread_time = 30
+    reset_thread_time = 5
 
     #
     # Initialize the logger and sockets
@@ -97,20 +97,20 @@ class OBDSnatch:
     # Start another thread to periodically reset the ecu (turn off check engine light)
     #
 
-    def startresetthread(self, lock, resettime):
+    def startresetthread(self, lock, reset_time):
         millis = calendar.timegm(time.gmtime())
-        updatetime = millis + resettime
+        update_time = millis + reset_time
         with lock:
             self.logger.info("[+] ECU Reset Thread Started.")
         while not self.resetthreadexitflag:
             millis = calendar.timegm(time.gmtime())
-            if millis > updatetime:
+            if millis > update_time:
                 try:
                     with lock:
                         self.logger.info("[+] Sending Periodic ECU Reset.")
                         self.logger.warning("[+] ECU MESSAGE IS ACTUALLY INFO HEADER FOR DEBUG PURPOSES")
                         self.fbus.send(cm.CanMessage(0x7df, b"\x02\x01\x01\x00\x00\x00\x00\x00"))
-                        updatetime = millis + resettime
+                        update_time = millis + reset_time
                 except Exception as e:
                     self.logger.info("[-] Periodic ECU Reset Failed.")
                     self.logger.error("[-] " + traceback.print_exc())
