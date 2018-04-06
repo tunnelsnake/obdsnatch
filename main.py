@@ -13,9 +13,10 @@ import calendar
 class OBDSnatch:
     rbus_interface = "can1"
     fbus_interface = "can0"
-    enable_reset_thread = True
+    enable_reset_thread = False
     queue_interface_reset_flag = False
     reset_thread_time = 5
+    reset_thread_error_time = 30
 
     rbus_filter = 0x7e8
     fbus_filter = 0x7df
@@ -43,7 +44,6 @@ class OBDSnatch:
         else:
             self.logger.warning("[-] ECU Reset Thread Disabled.")
 
-        self.resetinterfaces()
 
     #
     # Start the main loop
@@ -51,9 +51,6 @@ class OBDSnatch:
 
     def start(self):
         try:
-            #testmessage = cm.CanMessage(0x7df, b"\x01\x21\x00\x00\x00\x00\x00\x00")
-            #self.logger.info("[+] Sending test message: " + testmessage.getstring())
-            #self.rbus.send(testmessage)
             while True:
                 rbus_message = self.rbus.recv()
                 fbus_message = self.fbus.recv()
@@ -123,13 +120,14 @@ class OBDSnatch:
                         self.fbus.send(cm.CanMessage(0x7df, b"\x02\x01\x01\x00\x00\x00\x00\x00"))
                         update_time = millis + reset_time
                 except OSError:
-                    self.logger.info("[-] OS ERROR. No Available Buffer Space.")
-                    self.logger.info("[-] ECU Reset Thread Sleeping for 30 Seconds.")
+                    with lock:
+                        self.logger.info("[-] OS ERROR. No Available Buffer Space.")
+                        self.logger.info("[-] ECU Reset Thread Sleeping for " + str(self.reset_thread_error_time) +" Seconds.")
                     error_counter += 1
                     if error_counter == 3:
                         with lock:
                             self.queue_interface_reset_flag = True
-                    update_time = millis + reset_time + 30
+                    update_time = millis + reset_time + self.reset_thread_error_time
 
 
     #
@@ -167,7 +165,7 @@ class OBDSnatch:
         subprocess.Popen(['sudo', 'ifconfig', self.fbus_interface, 'down'], stdout=None, stderr=None)
         subprocess.Popen(['sudo', 'ifconfig', self.rbus_interface, 'up'], stdout=None, stderr=None)
         subprocess.Popen(['sudo', 'ifconfig', self.fbus_interface, 'up'], stdout=None, stderr=None)
-        time.sleep(.25)
+        time.sleep(.25) # kernel needs this time to prevent a crash
         self.rbus = cs.CanSocket(self.rbus_interface, self.rbus_filter, self.rbus_mask, self.logger)
         self.fbus = cs.CanSocket(self.fbus_interface, self.fbus_filter, self.fbus_mask, self.logger)
         self.logger.info("[+] Interfaces Successfully Reset.")
