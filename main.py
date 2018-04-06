@@ -110,7 +110,7 @@ class OBDSnatch:
                     self.logger.info("[-] Periodic ECU Reset Failed.")
                     #self.logger.error("[-] " + traceback.print_exc())
         with lock:
-            self.logger.info("[+] Exiting ECU Reset Thread.")
+            self.logger.info("[+] Exited ECU Reset Thread.")
 
 
     #
@@ -141,13 +141,13 @@ class OBDSnatch:
     #
 
     def cleanup(self):
-        self.logger.info("[+] Closing ECU Reset Thread.")
+        self.logger.info("[+] Attempting to Close ECU Reset Thread.")
         self.resetthreadexitflag = True
         self.t.join(None)
         #self.logger.info("[+] Sleeping For 5 Seconds For Thread Join.")
         #time.sleep(5)
         self.logger.info("[+] ECU Reset Thread Exited Successfully.")
-        self.logger.info("[+] Cleaning up Sockets.")
+        self.logger.info("[+] Cleaning Up Sockets.")
         self.rbus.sock.close()
         self.fbus.sock.close()
         self.logger.info("[+] Sockets Successfully Closed.")
