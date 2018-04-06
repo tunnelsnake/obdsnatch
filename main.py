@@ -43,6 +43,8 @@ class OBDSnatch:
         else:
             self.logger.warning("[-] ECU Reset Thread Disabled.")
 
+        self.resetinterfaces()
+
     #
     # Start the main loop
     #
