@@ -11,7 +11,7 @@ class CanParser:
         self.fbus = fbus
         self.logger = logger
 
-    def parse(self, message=cm.CanMessage):
+    def parsereal(self, message=cm.CanMessage):
 
         if message.getbyte(0) == 0x02 and message.getbyte(1) == 0x01 and message.getbyte(2) == 0x01:  #Mode 02 PID 01 (Information Header)
             self.logger.info("[+] Mode 02 PID 01 Intercepted.")
@@ -22,7 +22,11 @@ class CanParser:
         elif message.getbyte(0) == 0x01 and message.getbyte(1) == 0x03: #Mode 3 - DTC's
             self.logger.info("[+] DTCs Intercepted.")
             self.fbus.send(cm.CanMessage(0x7e8, b"\x00\x00\x00\x00\x00\x00\x00\x00"))
-        elif message.getbyte(0) == 0x00 and message.getbyte(1) == 0x00 and message.getbyte(2) == 0x00:
-            self.logger.info("[+] Empty Message Removed From Stream.")
         else:
             self.rbus.send(message) #send the real message over the real bus
+
+    def parsefake(self, message=cm.CanMessage):
+        if message.getbyte(0) == 0x00 and message.getbyte(1) == 0x00 and message.getbyte(2) == 0x00:
+            self.logger.info("[+] Empty Message Removed From Stream.")
+        else"
+            self.fbus.send(message)
