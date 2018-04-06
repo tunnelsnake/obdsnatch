@@ -7,6 +7,7 @@ import logging
 import subprocess
 import threading
 import time
+import calendar
 import traceback
 
 
@@ -95,19 +96,23 @@ class OBDSnatch:
     # Start another thread to periodically reset the ecu (turn off check engine light)
     #
 
-    def startresetthread(self, lock):
+    def startresetthread(self, lock, resettime):
+        millis = calendar.timegm(time.gmtime())
+        updatetime = millis + resettime
         with lock:
             self.logger.info("[+] ECU Reset Thread Started.")
         while not self.resetthreadexitflag:
-            time.sleep(10)
-            try:
-                with lock:
-                    self.logger.info("[+] Sending Periodic ECU Reset.")
-                    self.logger.warning("[+] ECU MESSAGE IS ACTUALLY INFO HEADER FOR DEBUG PURPOSES")
-                    self.fbus.send(cm.CanMessage(0x7df, b"\x02\x01\x01\x00\x00\x00\x00\x00"))
-            except Exception as e:
-                self.logger.info("[-] Periodic ECU Reset Failed.")
-                self.logger.error("[-] " + traceback.print_exc())
+            millis = calendar.timegm(time.gmtime())
+            if millis > updatetime:
+                try:
+                    with lock:
+                        self.logger.info("[+] Sending Periodic ECU Reset.")
+                        self.logger.warning("[+] ECU MESSAGE IS ACTUALLY INFO HEADER FOR DEBUG PURPOSES")
+                        self.fbus.send(cm.CanMessage(0x7df, b"\x02\x01\x01\x00\x00\x00\x00\x00"))
+                        updatetime = millis + resettime
+                except Exception as e:
+                    self.logger.info("[-] Periodic ECU Reset Failed.")
+                    self.logger.error("[-] " + traceback.print_exc())
         with lock:
             self.logger.info("[+] Exiting ECU Reset Thread.")
 
@@ -142,7 +147,7 @@ class OBDSnatch:
     def cleanup(self):
         self.logger.info("[+] Closing ECU Reset Thread.")
         self.resetthreadexitflag = True
-        self.t.join(12)
+        self.t.join()
         self.logger.info("[+] ECU Reset Thread Exited Successfully.")
         self.logger.info("[+] Cleaning up Sockets.")
         self.rbus.sock.close()
