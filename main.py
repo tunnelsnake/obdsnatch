@@ -8,14 +8,19 @@ import subprocess
 import threading
 import time
 import calendar
-import traceback
 
 
 class OBDSnatch:
     rbus_interface = "can1"
     fbus_interface = "can0"
     enable_reset_thread = True
+    queue_interface_reset_flag = False
     reset_thread_time = 5
+
+    rbus_filter = 0x7e8
+    fbus_filter = 0x7df
+    rbus_mask = 0x1F0
+    fbus_mask = 0x000
 
     #
     # Initialize the logger and sockets
@@ -27,8 +32,8 @@ class OBDSnatch:
         self.logger.info("[+]Using Logfile " + self.logfilename)
         self.logger.info("[+] Real Bus Interface: " + self.rbus_interface)
         self.logger.info("[+] Fake Bus Interface: " + self.fbus_interface)
-        self.rbus = cs.CanSocket(self.rbus_interface, 0x7e8, 0x1F0, self.logger)  # 0x7ef , 0x1F0
-        self.fbus = cs.CanSocket(self.fbus_interface, 0x7df, 0x000, self.logger)  # 0x7df , 0x000
+        self.rbus = cs.CanSocket(self.rbus_interface, self.rbus_filter, self.rbus_mask, self.logger)  # 0x7ef , 0x1F0
+        self.fbus = cs.CanSocket(self.fbus_interface, self.fbus_filter, self.fbus_mask, self.logger)  # 0x7df , 0x000
         self.parser = cp.CanParser(self.rbus, self.fbus, self.logger)
         if self.enable_reset_thread:
             self.resetthreadexitflag = False
@@ -58,6 +63,10 @@ class OBDSnatch:
                     if fbus_message.cob_id == 0x7df:
                         self.logger.info("[+] Reader Query Message Detected")
                         self.parser.parse(fbus_message)
+
+                if self.queue_interface_reset_flag:
+                    self.resetinterfaces()
+
 
         except KeyboardInterrupt:
             self.cleanup()
@@ -98,6 +107,7 @@ class OBDSnatch:
 
     def startresetthread(self, lock, reset_time):
         millis = calendar.timegm(time.gmtime())
+        error_counter = 0
         update_time = millis + reset_time
         with lock:
             self.logger.info("[+] ECU Reset Thread Started.")
@@ -113,8 +123,11 @@ class OBDSnatch:
                 except OSError:
                     self.logger.info("[-] OS ERROR. No Available Buffer Space.")
                     self.logger.info("[-] ECU Reset Thread Sleeping for 30 Seconds.")
-                    update_time = millis + reset_time
-                    time.sleep(30)
+                    error_counter += 1
+                    if error_counter == 3:
+                        with lock:
+                            self.queue_interface_reset_flag = True
+                    update_time = millis + reset_time + 30
 
 
     #
@@ -139,6 +152,23 @@ class OBDSnatch:
         self.logfilename = path + "/logs/" + str(ts)[10:].strip('.') + ".log"
         subprocess.Popen(['touch', self.logfilename], stdout=None, stderr=None)
         return self.logfilename
+
+    #
+    # Reset Interfaces
+    #
+
+    def resetinterfaces(self):
+        self.logger.warning("[+] Resetting Interfaces Due to Repeat Errors.")
+        self.rbus.sock.close()
+        self.fbus.sock.close()
+        subprocess.Popen(['ifconfig', self.rbus_interface, 'down'], stdout=None, stderr=None)
+        subprocess.Popen(['ifconfig', self.fbus_interface, 'down'], stdout=None, stderr=None)
+        subprocess.Popen(['ifconfig', self.rbus_interface, 'up'], stdout=None, stderr=None)
+        subprocess.Popen(['ifconfig', self.fbus_interface, 'up'], stdout=None, stderr=None)
+        self.rbus = cs.CanSocket(self.rbus_interface, self.rbus_filter, self.rbus_mask, self.logger)
+        self.fbus = cs.CanSocket(self.fbus_interface, self.fbus_filter, self.fbus_mask, self.logger)
+        self.logger.info("[+] Interfaces Successfully Reset.")
+        self.queue_interface_reset_flag = False
 
     #
     # Close the sockets
