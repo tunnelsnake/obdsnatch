@@ -15,7 +15,7 @@ class OBDSnatch:
     fbus_interface = "can0"
     enable_reset_thread = True
     queue_interface_reset_flag = False
-    reset_thread_time = 5
+    reset_thread_time = 60
     reset_thread_error_time = 30
 
     rbus_filter = 0x7e8
