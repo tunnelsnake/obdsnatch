@@ -51,7 +51,6 @@ class OBDSnatch:
 
     def start(self):
         try:
-            self.resetinterfaces()
             while True:
                 rbus_message = self.rbus.recv()
                 fbus_message = self.fbus.recv()
