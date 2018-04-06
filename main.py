@@ -116,8 +116,9 @@ class OBDSnatch:
                 try:
                     with lock:
                         self.logger.info("[+] Sending Periodic ECU Reset.")
-                        self.logger.warning("[+] ECU MESSAGE IS ACTUALLY INFO HEADER FOR DEBUG PURPOSES")
-                        self.rbus.send(cm.CanMessage(0x7df, b"\x02\x01\x01\x00\x00\x00\x00\x00"))
+                        self.rbus.send(cm.CanMessage(0x7df, b"\x01\x04\x00\x00\x00\x00\x00\x00"))
+                        self.rbus.recv()    #eat the responses
+                        self.rbus.recv()
                         update_time = millis + reset_time
                 except OSError:
                     with lock:
