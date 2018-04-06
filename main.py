@@ -14,6 +14,7 @@ import traceback
 class OBDSnatch:
     rbus_interface = "can1"
     fbus_interface = "can0"
+    reset_thread_time = 30
 
     #
     # Initialize the logger and sockets
@@ -30,7 +31,7 @@ class OBDSnatch:
         self.parser = cp.CanParser(self.rbus, self.fbus, self.logger)
         self.lock = threading.Lock()
         self.resetthreadexitflag = False
-        self.t = threading.Thread(target=self.startresetthread, args=(self.lock,))
+        self.t = threading.Thread(target=self.startresetthread, args=(self.lock, self.reset_thread_time))
         self.t.start()
 
     #
