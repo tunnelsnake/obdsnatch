@@ -142,7 +142,7 @@ class OBDSnatch:
     def cleanup(self):
         self.logger.info("[+] Closing ECU Reset Thread.")
         self.resetthreadexitflag = True
-        self.t.join()
+        self.t.join(12)
         self.logger.info("[+] ECU Reset Thread Exited Successfully.")
         self.logger.info("[+] Cleaning up Sockets.")
         self.rbus.sock.close()
