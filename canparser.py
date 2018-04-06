@@ -1,11 +1,12 @@
 import canmessage as cm
 import cansocket as cs
+import config as conf
 import logging
 
 
 class CanParser:
 
-    def __init__(self, rbus=cs.CanSocket, fbus=cs.CanSocket, logger=logging._loggerClass):
+    def __init__(self, rbus=cs.CanSocket, fbus=cs.CanSocket, logger=logging._loggerClass, config=conf.Config):
         self.rbus = rbus
         self.fbus = fbus
         self.logger = logger
@@ -18,9 +19,6 @@ class CanParser:
         elif message.getbyte(0) == 0x01 and message.getbyte(1) == 0x07: #Mode 07 - Pending Codes
             self.logger.info("[+] Pending Code Read Intercepted.")
             self.fbus.send(cm.CanMessage(0x7e8, b"\x00\x00\x00\x00\x00\x00\x00\x00"))
-        elif message.getbyte(0) == 0x02 and message.getbyte(1) == 0x01 and message.getbyte(2) == 0x0D:
-            self.logger.info("[+] Speed Code Intercepted")
-            self.fbus.send(cm.CanMessage(0x7e8, b"\x03\x41\x0d\x55\x55\x00\x00\x00"))
         elif message.getbyte(0) == 0x01 and message.getbyte(1) == 0x03: #Mode 3 - DTC's
             self.logger.info("[+] DTCs Intercepted.")
             self.fbus.send(cm.CanMessage(0x7e8, b"\x00\x00\x00\x00\x00\x00\x00\x00"))

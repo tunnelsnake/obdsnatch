@@ -5,6 +5,8 @@ import os
 import datetime
 import logging
 import subprocess
+import threading
+import time
 
 
 class OBDSnatch:
@@ -24,6 +26,9 @@ class OBDSnatch:
         self.rbus = cs.CanSocket(self.rbus_interface, 0x7e8, 0x1F0, self.logger)  # 0x7ef , 0x1F0
         self.fbus = cs.CanSocket(self.fbus_interface, 0x7df, 0x000, self.logger)  # 0x7df , 0x000
         self.parser = cp.CanParser(self.rbus, self.fbus, self.logger)
+        self.lock = threading.Lock()
+        t = threading.Thread(target=self.startresetthread, args=(self.lock,))
+        t.start()
 
     #
     # Start the main loop
@@ -53,6 +58,51 @@ class OBDSnatch:
             self.fbus.sock.close()
             self.logger.info("[+] Sockets Successfully Closed.")
             self.logger.info("[+] Using Logfile " + self.logfilename + ".")
+
+    #
+    # Create a response profile unique to the vehicle
+    #
+
+    def createprofile(self, configfilepath):
+        self.rbus.send(cm.CanMessage(0x7df, b"\x02\x01\x01\x00\x00\x00\x00\x00"))
+        idlist = list
+        for num in range(0, 1000):
+            message = self.rbus.recv();
+            if num % 50 == 0:
+                self.rbus.send(cm.CanMessage(0x7df, b"\x02\x01\x01\x00\x00\x00\x00\x00"))
+            if message is not None and 0x7e8 <= message.cob_id <= 0x7ef:
+                idlist.append(message.cob_id)
+        idlist = list(set(idlist))
+        if len(idlist) == 0:
+            self.logger.warning("[-] No Messages Were Returned During Profile Creation.")
+            self.logger.warning("[-] Is The Device Plugged In? Vehicle Ignition On?")
+        elif len(idlist) == 1:
+            self.logger.info("[+] Profile Test Returned One Valid ID: 0x%03x" % idlist[0])
+            self.logger.info("[+] Creating New Profile.")
+            self.logger.info("[+] Updating System Profile.")
+        elif len(idlist) == 2:
+            self.logger.info("[+] Profile Test Returned Two Valid IDs: 0x%03x and 0x%03x." % idlist[0], idlist[1])
+            self.logger.info("[+] Creating New Profile.")
+            self.logger.info("[+] Updating System Profile.")
+        else:
+            self.logger.info("[+] Profile Test Returned " + str(len(idlist)) + " Valid IDs.")
+            self.logger.info("[+] Creating New Profile.")
+            self.logger.info("[+] Updating System Profile.")
+
+    #
+    # Start another thread to periodically reset the ecu (turn off check engine light)
+    #
+
+    def startresetthread(self, lock):
+        while(True):
+            time.sleep(30)
+            try:
+                with lock:
+                    self.logger.info("[+] Sending Periodic ECU Reset.")
+                    self.logger.warning("[+] ECU MESSAGE IS ACTUALLY INFO HEADER FOR DEBUG PURPOSES")
+                    self.rbus.send(0x7df, b"\x02\x01\x01\x00\x00\x00\x00\x00")
+            except Exception:
+                self.logger.info("[-] Periodic ECU Reset Failed.")
 
     #
     # Start the logging facility
