@@ -94,8 +94,10 @@ class OBDSnatch:
     #
 
     def startresetthread(self, lock):
+        with lock:
+            self.logger("[+] ECU Reset Thread Started.")
         while(True):
-            time.sleep(30)
+            time.sleep(10)
             try:
                 with lock:
                     self.logger.info("[+] Sending Periodic ECU Reset.")
