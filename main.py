@@ -28,8 +28,9 @@ class OBDSnatch:
         self.fbus = cs.CanSocket(self.fbus_interface, 0x7df, 0x000, self.logger)  # 0x7df , 0x000
         self.parser = cp.CanParser(self.rbus, self.fbus, self.logger)
         self.lock = threading.Lock()
-        t = threading.Thread(target=self.startresetthread, args=(self.lock,))
-        t.start()
+        self.resetthreadexitflag = False
+        self.t = threading.Thread(target=self.startresetthread, args=(self.lock,))
+        self.t.start()
 
     #
     # Start the main loop
@@ -101,12 +102,17 @@ class OBDSnatch:
             time.sleep(10)
             try:
                 with lock:
+                    if self.resetthreadexitflag:
+                        self.logger.info("[+] ECU Reset Thread Flag Set.")
+                        self.logger.info("[+] ECU Reset Thread Exiting.")
+                        break
                     self.logger.info("[+] Sending Periodic ECU Reset.")
                     self.logger.warning("[+] ECU MESSAGE IS ACTUALLY INFO HEADER FOR DEBUG PURPOSES")
                     self.fbus.send(cm.CanMessage(0x7df, b"\x02\x01\x01\x00\x00\x00\x00\x00"))
             except Exception as e:
                 self.logger.info("[-] Periodic ECU Reset Failed.")
                 self.logger.error("[-] " + traceback.print_exc())
+
 
 
     #
@@ -137,12 +143,16 @@ class OBDSnatch:
     #
 
     def cleanup(self):
+        self.logger.info("[+] Closing ECU Reset Thread.")
+        self.resetthreadexitflag = True
+        self.t.join()
+        self.logger.info("[+] ECU Reset Thread Exited Successfully.")
         self.logger.info("[+] Cleaning up Sockets.")
         self.rbus.sock.close()
         self.fbus.sock.close()
         self.logger.info("[+] Sockets Successfully Closed.")
         self.logger.info("[+] Written to Logfile " + self.logfilename + ".")
-        print("Have A Lovely Day.")
+
 
 
 o = OBDSnatch()
