@@ -57,7 +57,8 @@ class OBDSnatch:
 
                 if rbus_message is not None:
                     self.logger.info("[+] Inspection Response Message Detected")
-                    self.fbus.send(rbus_message)
+                    self.parser.parse(rbus_message)
+                    #self.fbus.send(rbus_message)
                 if fbus_message is not None:
                     if fbus_message.cob_id == 0x7df:
                         self.logger.info("[+] Reader Query Message Detected")
