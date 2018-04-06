@@ -56,12 +56,7 @@ class OBDSnatch:
                         self.parser.parse(fbus_message)
 
         except KeyboardInterrupt:
-            self.logger.info("[+] Keyboard Interrupt Received.")
-            self.logger.info("[+] Cleaning up Sockets.")
-            self.rbus.sock.close()
-            self.fbus.sock.close()
-            self.logger.info("[+] Sockets Successfully Closed.")
-            self.logger.info("[+] Using Logfile " + self.logfilename + ".")
+            self.cleanup()
 
     #
     # Create a response profile unique to the vehicle
