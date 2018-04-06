@@ -148,7 +148,7 @@ class OBDSnatch:
     def cleanup(self):
         self.logger.info("[+] Closing ECU Reset Thread.")
         self.resetthreadexitflag = True
-        self.t.join()
+        self.t.join(None)
         self.logger.info("[+] Sleeping For 5 Seconds For Thread Join.")
         time.sleep(5)
         self.logger.info("[+] ECU Reset Thread Exited Successfully.")
