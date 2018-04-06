@@ -113,7 +113,7 @@ class OBDSnatch:
                         update_time = millis + reset_time
                 except Exception as e:
                     self.logger.info("[-] Periodic ECU Reset Failed.")
-                    self.logger.error("[-] " + traceback.print_exc())
+                    #self.logger.error("[-] " + traceback.print_exc())
         with lock:
             self.logger.info("[+] Exiting ECU Reset Thread.")
 
