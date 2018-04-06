@@ -13,7 +13,7 @@ import calendar
 class OBDSnatch:
     rbus_interface = "can1"
     fbus_interface = "can0"
-    enable_reset_thread = False
+    enable_reset_thread = True
     queue_interface_reset_flag = False
     reset_thread_time = 5
     reset_thread_error_time = 30
@@ -117,7 +117,7 @@ class OBDSnatch:
                     with lock:
                         self.logger.info("[+] Sending Periodic ECU Reset.")
                         self.logger.warning("[+] ECU MESSAGE IS ACTUALLY INFO HEADER FOR DEBUG PURPOSES")
-                        self.fbus.send(cm.CanMessage(0x7df, b"\x02\x01\x01\x00\x00\x00\x00\x00"))
+                        self.rbus.send(cm.CanMessage(0x7df, b"\x02\x01\x01\x00\x00\x00\x00\x00"))
                         update_time = millis + reset_time
                 except OSError:
                     with lock:
