@@ -7,6 +7,7 @@ import logging
 import subprocess
 import threading
 import time
+import traceback
 
 
 class OBDSnatch:
@@ -103,8 +104,10 @@ class OBDSnatch:
                     self.logger.info("[+] Sending Periodic ECU Reset.")
                     self.logger.warning("[+] ECU MESSAGE IS ACTUALLY INFO HEADER FOR DEBUG PURPOSES")
                     self.fbus.send(0x7df, b"\x02\x01\x01\x00\x00\x00\x00\x00")
-            except Exception:
+            except Exception as e:
                 self.logger.info("[-] Periodic ECU Reset Failed.")
+                self.logger.error("[-] " + traceback.print_exc())
+
 
     #
     # Start the logging facility
