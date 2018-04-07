@@ -67,7 +67,6 @@ class OBDSnatch:
                 if self.queue_interface_reset_flag:
                     self.resetinterfaces()
 
-
         except KeyboardInterrupt:
             self.cleanup()
 
