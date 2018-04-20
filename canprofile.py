@@ -68,7 +68,7 @@ class CanProfile:
 
 
     def sendrequest(self, requestnum):
-        self.rbus.send(self.requestlist[requestnum])
+        self.rbus.send(self.request_list[requestnum])
 
 
     def createprofile(self, configfilepath):
