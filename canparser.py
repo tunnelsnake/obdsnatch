@@ -9,7 +9,7 @@ class CanParser:
     pending_code_id = 0x7e9
     dtc_message_id = 0x7ea
 
-    def __init__(self, rbus=cs.CanSocket, fbus=cs.CanSocket, logger=logging._loggerClass, config=conf.Config):
+    def __init__(self, rbus=cs.CanSocket, fbus=cs.CanSocket, logger=logging._loggerClass):
         self.rbus = rbus
         self.fbus = fbus
         self.logger = logger
