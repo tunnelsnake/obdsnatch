@@ -20,10 +20,18 @@ class CanProfile:
 
     request_reset_time = 200 #milliseconds
 
-    dfl_resp_list = list
-    prof_resp_list = list
+    dfl_resp_list = list()
 
-    request_list = list(INFO_HEADER_MESSAGE, PENDING_CODE_MESSAGE, DTC_REQUEST_MESSAGE)
+    dfl_resp_list.append(0x7e8)
+    dfl_resp_list.append(0x7e9)
+    dfl_resp_list.append(0x7ea)
+
+    prof_resp_list = list()
+
+    request_list = list()
+    request_list.append(INFO_HEADER_MESSAGE)
+    request_list.append(PENDING_CODE_MESSAGE)
+    request_list.append(DTC_REQUEST_MESSAGE)
 
     def __init__(self, rbus=cs.CanSocket, fbus=cs.CanSocket, logger=logging._loggerClass):
         self.rbus = rbus
