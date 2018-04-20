@@ -1,6 +1,7 @@
 import cansocket as cs
 import canmessage as cm
 import canparser as cp
+import canprofile as cprof
 import os
 import datetime
 import logging
@@ -43,6 +44,11 @@ class OBDSnatch:
             self.t.start()
         else:
             self.logger.warning("[-] ECU Reset Thread Disabled.")
+        self.logger.info("[+] Creating New Profile.")
+        prof = cprof.CanProfile(self.rbus, self.fbus, self.logger)
+        prof.newprof()
+        config = prof.dumpconfig()
+        self.parser.loadconfig()
 
 
     #
