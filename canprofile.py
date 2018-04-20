@@ -50,7 +50,7 @@ class CanProfile:
             self.sendrequest(num)
             while millis < update_time:
                 response_message = self.rbus.recv()
-                if 0x7e8 <= response_message.cob_id <= 0x7ef:
+                if response_message is not None and 0x7e8 <= response_message.cob_id <= 0x7ef:
                     cob_id_list.append(response_message)
                 millis = calendar.timegm(time.gmtime())
             if len(cob_id_list) > 0:
