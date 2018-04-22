@@ -38,4 +38,5 @@ class CanParser:
         self.info_header_id = config.info_header_id
         self.pending_code_id = config.pending_code_id
         self. dtc_message_id = config.dtc_message_id
-        self.logger.info("[+] Loaded New Config: 0x%03x, 0x%03x, 0x%03x" % config.info_header_id, config.pending_code_id, config.dtc_message_id)
+        self.logger.info("[+] Parser Loaded New Config.")
+        #self.logger.info("[+] Loaded New Config: 0x%03x, 0x%03x, 0x%03x" % config.info_header_id, config.pending_code_id, config.dtc_message_id)
