@@ -44,11 +44,11 @@ class OBDSnatch:
             self.t.start()
         else:
             self.logger.warning("[-] ECU Reset Thread Disabled.")
-        self.logger.info("[+] Creating New Profile.")
-        prof = cprof.CanProfile(self.rbus, self.fbus, self.logger)
-        prof.newprof()
-        config = prof.dumpconfig()
-        self.parser.loadconfig(config)
+        #self.logger.info("[+] Creating New Profile.")
+        #prof = cprof.CanProfile(self.rbus, self.fbus, self.logger)
+        #prof.newprof()
+        #config = prof.dumpconfig()
+        #self.parser.loadconfig(config)
 
 
     #
