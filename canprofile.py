@@ -57,10 +57,10 @@ class CanProfile:
             if len(cob_id_list) > 0:
                 cob_id_list = list(set(cob_id_list))
                 self.logger.info("[+] Query Number " + str(num) + " Returned " + str(len(cob_id_list)) + " Results.")
-                self.prof_resp_list[num] = cob_id_list(random.randint(0, len(cob_id_list)))
+                self.prof_resp_list.append(cob_id_list(random.randint(0, len(cob_id_list))))
             else:
                 self.logger.info("[-] Query Number " + str(num) + " Returned no results. Using Default.")
-                self.prof_resp_list[num] = self.dfl_resp_list[num]
+                self.prof_resp_list.append(self.dfl_resp_list[num])
 
     def dumpconfig(self):
         config = Config(self.prof_resp_list[0], self.prof_resp_list[1], self.prof_resp_list[2])
