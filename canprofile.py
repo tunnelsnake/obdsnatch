@@ -18,7 +18,7 @@ class CanProfile:
     PENDING_CODE_MESSAGE = cm.CanMessage(0x7df, b"\x01\x07\x00\x00\x00\x00\x00\x00")
     DTC_REQUEST_MESSAGE = cm.CanMessage(0x7df, b"\x01\x03\x01\x00\x00\x00\x00\x00")
 
-    request_reset_time = 1 #milliseconds
+    request_reset_time = 1 #seconds
 
     dfl_resp_list = list()
 
@@ -56,10 +56,10 @@ class CanProfile:
                     cob_id_list.append(response_message)
             if len(cob_id_list) > 0:
                 cob_id_list = list(set(cob_id_list))
-                self.logger.info("[+] Query Number " + num + " Returned " + len(cob_id_list) + " Results.")
+                self.logger.info("[+] Query Number " + str(num) + " Returned " + str(len(cob_id_list)) + " Results.")
                 self.prof_resp_list[num] = cob_id_list(random.randint(0, len(cob_id_list)))
             else:
-                self.logger.info("[-] Query Number " + num + " Returned no results. Using Default.")
+                self.logger.info("[-] Query Number " + str(num) + " Returned no results. Using Default.")
                 self.prof_resp_list[num] = self.dfl_resp_list[num]
 
     def dumpconfig(self):
