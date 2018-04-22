@@ -15,6 +15,7 @@ class OBDSnatch:
     rbus_interface = "can1"
     fbus_interface = "can0"
     enable_reset_thread = False
+    enable_profiler = False
     queue_interface_reset_flag = False
     reset_thread_time = 30
     reset_thread_error_time = 30
@@ -44,11 +45,14 @@ class OBDSnatch:
             self.t.start()
         else:
             self.logger.warning("[-] ECU Reset Thread Disabled.")
-        self.logger.info("[+] Creating New Profile.")
-        prof = cprof.CanProfile(self.rbus, self.fbus, self.logger)
-        prof.newprof()
-        config = prof.dumpconfig()
-        self.parser.loadconfig(config)
+        if self.enable_profiler:
+            self.logger.info("[+] Creating New Profile.")
+            prof = cprof.CanProfile(self.rbus, self.fbus, self.logger)
+            prof.newprof()
+            config = prof.dumpconfig()
+            self.parser.loadconfig(config)
+        else:
+            self.logger.warning("[-] Profiler Disabled.")
 
 
     #
