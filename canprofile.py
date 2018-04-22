@@ -18,7 +18,7 @@ class CanProfile:
     PENDING_CODE_MESSAGE = cm.CanMessage(0x7df, b"\x01\x07\x00\x00\x00\x00\x00\x00")
     DTC_REQUEST_MESSAGE = cm.CanMessage(0x7df, b"\x01\x03\x01\x00\x00\x00\x00\x00")
 
-    request_reset_time = 1 #seconds
+    request_reset_time = 5 #seconds
 
     dfl_resp_list = list()
 
