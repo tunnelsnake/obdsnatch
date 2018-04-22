@@ -71,7 +71,7 @@ class CanProfile:
 
 
     def sendrequest(self, requestnum):
-        self.logger.info("[+] Profiler Sent Request Number " + requestnum + ".")
+        self.logger.info("[+] Profiler Sent Request Number " + str(requestnum) + ".")
         self.rbus.send(self.request_list[requestnum])
 
 
