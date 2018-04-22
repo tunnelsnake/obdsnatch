@@ -48,7 +48,7 @@ class OBDSnatch:
         prof = cprof.CanProfile(self.rbus, self.fbus, self.logger)
         prof.newprof()
         config = prof.dumpconfig()
-        self.parser.loadconfig()
+        self.parser.loadconfig(config)
 
 
     #

@@ -7,7 +7,7 @@ import random
 
 class Config:
 
-    def __init__(self, info_header_id=0x000, pending_code_id=0x000, dtc_message_id=0x000):
+    def __init__(self, info_header_id=0x7e8, pending_code_id=0x7e8, dtc_message_id=0x7e8):
         self.info_header_id = info_header_id
         self.pending_code_id = pending_code_id
         self.dtc_message_id = dtc_message_id
