@@ -45,7 +45,7 @@ class CanProfile:
     def newprof(self):
         millis = calendar.timegm(time.gmtime())
         for num in range(0, 5):
-            cob_id_list = list
+            cob_id_list = list()
             update_time = millis + self.request_reset_time
             self.sendrequest(num)
             while millis < update_time:
